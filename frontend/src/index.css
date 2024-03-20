@@ -1,4 +1,112 @@
-body, :root{
+:root {
+    font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+    line-height: 1.5;
+    font-weight: 400;
+    color-scheme: light dark;
+    background-color: #575757;
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    --bodyFondColor: #f5f5f5;
+    --standardFondColor: #474747;
+    --standardHoverFondColor: #8e8d8d;
+    --standardButtonBackgroundColor: #f5f5f5;
+    --standardButtonHoverBackgroundColor: #e5e5e5;
+    --standardButtonActiveBackgroundColor: #e5e5e5;
+}
+
+body {
+  height: 100%;
   margin: 0;
   padding: 0;
+  display: flex;
+  justify-content: center;
+  color: var(--bodyFondColor);
+}
+
+#__next {
+    height: 100%;
+    display: grid;
+    grid-template-areas:
+    "header"
+    "nav"
+    "main"
+    "footer";
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr auto;
+    width: 100%;
+    max-width: 600px;
+    background-color: #edecec;
+    position: relative;
+}
+
+header {
+    grid-area: header;
+    width: 90vw;
+    background-color: #575757;
+    color: var(--bodyFondColor);
+    display: flex;
+    justify-content: space-around;
+}
+
+nav {
+    grid-area: nav;
+    display: flex;
+    justify-content: space-around;
+    width: 90vw;
+    padding: 0;
+    margin: 5px;
+    background-color: #575757;
+    color: var(--standardFondColor);
+}
+
+main {
+    grid-area: main;
+    width: 90vw;
+    padding: 0;
+    margin: 5px;
+    overflow: auto;
+    position: relative;
+    background-color: #edecec;
+    color: var(--standardFondColor);
+    border-radius: 5px;
+}
+
+footer {
+    grid-area: footer;
+    width: 90vw;
+    background-color: #575757;
+    color: var(--bodyFondColor);
+    padding: 0;
+    position: absolute;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+}
+
+li {
+    list-style: none;
+}
+
+a {
+    font-weight: 500;
+    text-decoration: none;
+    color: var(--bodyFondColor);
+}
+
+a:hover {
+    color: var(--standardHoverFondColor);
+}
+
+h1 {
+    margin: 5px;
+}
+
+h2 {
+    margin: 5px;
+}
+
+p {
+    margin: 5px;
 }
