@@ -1,4 +1,4 @@
-import Layout from "./components/Layout/Layout.tsx";
+import Layout from "./Layout.tsx";
 import {Route, Routes} from "react-router-dom";
 import Home from "./components/Home/Home.tsx";
 import Projects from "./components/Projects/Projects.tsx";
