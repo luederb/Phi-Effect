@@ -13,9 +13,6 @@ export default function Layout({children}: Readonly<LayoutProps>) {
             <main>
                 {children}
             </main>
-            <footer>
-                <p>&copy;2024 Lüder</p>
-            </footer>
         </>
     );
 }
