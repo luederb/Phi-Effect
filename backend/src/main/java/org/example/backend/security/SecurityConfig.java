@@ -20,7 +20,6 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 
-import java.util.Map;
 
 
 @Configuration
@@ -52,23 +51,16 @@ public class SecurityConfig {
         return http.build();
     }
 
-    @Bean
+
+    /*@Bean
     public OAuth2UserService<OAuth2UserRequest, OAuth2User> oauth2UserService() {
         DefaultOAuth2UserService delegate = new DefaultOAuth2UserService();
 
         return request -> {
             OAuth2User user = delegate.loadUser(request);
 
-            if (!userRepository.existsById(user.getAttributes().get("sub").toString())){
-                Map<String, Object> details = user.getAttributes();
-                User newUser = new User(
-                        (String) details.get("sub"),
-                        (String) details.get("name"),
-                        (String) details.get("given_name"),
-                        (String) details.get("family_name"),
-                        (String) details.get("email"),
-                        (String) details.get("picture")
-                );
+            if (!userRepository.existsById(user.getName())){
+                User newUser = new User(user.getAttributes());
                 userRepository.save(newUser);
 
                 return user;
@@ -76,5 +68,15 @@ public class SecurityConfig {
                 throw new UserAlreadyExistsException(user.getName());
             }
         };
-    }
+    }*/
 }
+
+/*Map<String, Object> details = user.getAttributes();
+                User newUser = new User(
+                        (String) details.get("sub"),
+                        (String) details.get("name"),
+                        (String) details.get("given_name"),
+                        (String) details.get("family_name"),
+                        (String) details.get("email"),
+                        (String) details.get("picture")
+                );*/

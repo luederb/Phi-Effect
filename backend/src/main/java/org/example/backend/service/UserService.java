@@ -14,12 +14,12 @@ public class UserService {
 
     public User saveUser(User user) {
 
-        if (user == null || user.getSub() == null) {
+        if (user == null || user.getId() == null) {
             throw new IllegalArgumentException("User or User ID must not be null");
         }
 
-        if (repo.findById(user.getSub()).isPresent()) {
-            throw new UserAlreadyExistsException("User already exists with ID: " + user.getSub());
+        if (repo.findById(user.getId()).isPresent()) {
+            throw new UserAlreadyExistsException("User already exists with ID: " + user.getId());
         }
         return repo.save(user);
     }
