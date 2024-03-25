@@ -1,7 +1,5 @@
-package org.example.backend;
-import org.example.backend.exceptions.ApiError;
+package org.example.backend.exceptions;
 import org.example.backend.exceptions.GlobalExceptionHandler;
-import org.example.backend.exceptions.UserAlreadyExistsException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -15,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class GlobalExceptionHandlerTest {
+class GlobalExceptionHandlerTest {
 
     @InjectMocks
     private GlobalExceptionHandler globalExceptionHandler;
@@ -24,17 +22,7 @@ public class GlobalExceptionHandlerTest {
     private WebRequest webRequest;
 
     @Test
-    public void handleUserAlreadyExistsExceptionTest() {
-        UserAlreadyExistsException exception = new UserAlreadyExistsException("User already exists");
-        when(webRequest.getRemoteUser()).thenReturn("testUser");
-
-        ResponseEntity<Object> responseEntity = globalExceptionHandler.handleUserAlreadyExists(exception, webRequest);
-
-        assertEquals(HttpStatus.CONFLICT, responseEntity.getStatusCode());
-        assertEquals("User already exists", ((ApiError) responseEntity.getBody()).getMessage());
-    }
-    @Test
-    public void handleIllegalArgumentExceptionTest() {
+    void handleIllegalArgumentExceptionTest() {
         IllegalArgumentException exception = new IllegalArgumentException("Illegal argument");
         when(webRequest.getRemoteUser()).thenReturn("testUser");
 
@@ -44,7 +32,7 @@ public class GlobalExceptionHandlerTest {
         assertEquals("Illegal argument", responseEntity.getBody());
     }
     @Test
-    public void handleGeneralExceptionTest() {
+    void handleGeneralExceptionTest() {
         Exception exception = new Exception("An unexpected error occurred");
         when(webRequest.getRemoteUser()).thenReturn("testUser");
 
@@ -54,7 +42,7 @@ public class GlobalExceptionHandlerTest {
         assertEquals("An unexpected error occurred", responseEntity.getBody());
     }
     @Test
-    public void handleGeneralExceptionTest_noUser() {
+    void handleGeneralExceptionTest_noUser() {
         Exception exception = new Exception("An unexpected error occurred");
         when(webRequest.getRemoteUser()).thenReturn(null);
 
@@ -64,7 +52,7 @@ public class GlobalExceptionHandlerTest {
         assertEquals("An unexpected error occurred", responseEntity.getBody());
     }
     @Test
-    public void handleGeneralExceptionTest_noExceptionMessage() {
+    void handleGeneralExceptionTest_noExceptionMessage() {
         Exception exception = new Exception();
         when(webRequest.getRemoteUser()).thenReturn("testUser");
 
@@ -74,7 +62,7 @@ public class GlobalExceptionHandlerTest {
         assertEquals("An unexpected error occurred", responseEntity.getBody());
     }
     @Test
-    public void handleGeneralExceptionTest_noUser_noExceptionMessage() {
+    void handleGeneralExceptionTest_noUser_noExceptionMessage() {
         Exception exception = new Exception();
         when(webRequest.getRemoteUser()).thenReturn(null);
 

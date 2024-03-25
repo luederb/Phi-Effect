@@ -13,7 +13,7 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.Optional;
+import java.util.NoSuchElementException;
 @Service
 @RequiredArgsConstructor
 public class CustomAuthenticationHandler implements AuthenticationSuccessHandler {
@@ -27,11 +27,13 @@ public class CustomAuthenticationHandler implements AuthenticationSuccessHandler
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         var principle = (OAuth2User) authentication.getPrincipal();
         String id = principle.getAttributes().get("sub").toString();
-        Optional<User> user = userRepository.findById(id);
-        if (user.isPresent()) {
-            response.sendRedirect( "http://localhost:5173");
+        User user = userRepository.findById(id).orElseThrow(() -> new NoSuchElementException("no User found"));
+        if (!user.isNewUser()) {
+            response.sendRedirect( appUrl);
         } else {
-            response.sendRedirect("http://localhost:5173/complete-profile");
+            user.setNewUser(false);
+            userRepository.save(user);
+            response.sendRedirect( appUrl + "/complete-profile");
         }
 
     }

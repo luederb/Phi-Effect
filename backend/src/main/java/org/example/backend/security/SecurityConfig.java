@@ -2,11 +2,10 @@ package org.example.backend.security;
 
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.example.backend.exceptions.UserAlreadyExistsException;
 import org.example.backend.model.User;
 import org.example.backend.repository.UserRepository;
 import org.example.backend.service.CustomAuthenticationHandler;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -17,11 +16,8 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserRequest;
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserService;
-import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
-import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 
@@ -31,7 +27,14 @@ import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
+    private final CustomAuthenticationHandler customAuthenticationHandler;
     private final UserRepository userRepository;
+
+    @Autowired
+    public SecurityConfig(UserRepository userRepository, CustomAuthenticationHandler customAuthenticationHandler) {
+        this.userRepository = userRepository;
+        this.customAuthenticationHandler = customAuthenticationHandler;
+    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -39,7 +42,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.ALWAYS))
                 .exceptionHandling(e -> e.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)))
-                .oauth2Login(o -> o.successHandler(new CustomAuthenticationHandler(userRepository))
+                .oauth2Login(o -> o.successHandler(customAuthenticationHandler)
                 )
                 .authorizeHttpRequests(a -> a
                         .requestMatchers(HttpMethod.GET, "/api/users/me").authenticated()
@@ -63,7 +66,6 @@ public class SecurityConfig {
                 userRepository.save(newUser);
                 return user;
             }
-
             return user;
         };
     }
