@@ -16,7 +16,7 @@ export default function Home() {
     });
 
     function loadUser() {
-        axios.get('/api/auth/me')
+        axios.get('/api/users/me')
             .then(response => {
                 setUserData(response.data)
                 console.log("User data loaded:", response.data);
@@ -24,17 +24,6 @@ export default function Home() {
             .catch((error) => {
                 console.error("An error occurred while loading user data:", error);
             });
-    }
-
-    function saveNewUser(user: User) {
-        axios.post('/api/user', user)
-            .then(response => {
-                console.log("User data saved:", response.data);
-            })
-            .catch((error) => {
-                console.error("An error occurred while saving user data:", error);
-            });
-
     }
 
     useEffect(() => {
@@ -51,7 +40,6 @@ export default function Home() {
                 </>
                 :
                 <HomeWithoutLogin/>}
-            <button onClick={() => saveNewUser(userData)}>Save user</button>
         </div>
     )
 }
