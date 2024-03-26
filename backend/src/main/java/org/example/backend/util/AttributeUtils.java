@@ -22,6 +22,10 @@ public class AttributeUtils {
             LOGGER.error("Expected a String for attribute: {}", key);
             throw new IllegalArgumentException("Expected a String for attribute: " + key);
         }
+        if (((String) value).isEmpty()) {
+            LOGGER.error("Attribute {} cannot be empty", key);
+            throw new IllegalArgumentException("Invalid attribute value: name");
+        }
         return (String) value;
     }
 }
