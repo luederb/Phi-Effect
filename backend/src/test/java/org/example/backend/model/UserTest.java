@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.example.backend.util.AttributeUtils.getStringAttribute;
 import static org.junit.jupiter.api.Assertions.*;
 
 class UserTest {
@@ -29,6 +30,7 @@ class UserTest {
         assertEquals("https://example.com/john.jpg", user.getPicture());
         assertTrue(user.isNewUser());
     }
+
     @Test
     void testConstructorWithInvalidAttributes() {
         Map<String, Object> attributes = new HashMap<>();
@@ -92,5 +94,34 @@ class UserTest {
         assertEquals("john.doe@example.com", user.getEmail());
         assertEquals("https://example.com/john.jpg", user.getPicture());
         assertTrue(user.isNewUser());
+    }
+
+    @Test
+    void testEqualsAndHashCode() {
+        Map<String, Object> attributes = new HashMap<>();
+        attributes.put("sub", "123");
+        attributes.put("name", "John Doe");
+        attributes.put("given_name", "John");
+        attributes.put("family_name", "Doe");
+        attributes.put("email", "john.doe@example.com");
+        attributes.put("picture", "https://example.com/john.jpg");
+
+        User user1 = new User(attributes);
+        User user2 = new User(attributes);
+
+        assertTrue(user1.equals(user2) && user2.equals(user1));
+        assertEquals(user1.hashCode(), user2.hashCode());
+
+        // Change an attribute
+        user2.setName("Jane Doe");
+        assertFalse(user1.equals(user2) || user2.equals(user1));
+        assertNotEquals(user1.hashCode(), user2.hashCode());
+    }
+    @Test
+    void testGetStringAttributeWithMissingAttribute() {
+        Map<String, Object> attributes = new HashMap<>();
+        attributes.put("name", "John Doe");
+
+        assertThrows(IllegalArgumentException.class, () -> getStringAttribute(attributes, "missingAttribute"));
     }
 }
