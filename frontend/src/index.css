@@ -124,11 +124,13 @@ button, .link-as-button {
     background-color: var(--highlightBackgroundColor);
     color: var(--standardFondColor);
     box-shadow: 2px 2px 3px var(--standardButtonShadowColor), inset 0 0 5px #A04250;
+
     &:hover {
         cursor: pointer;
         background-color: var(--highlightBackgroundColor);
         box-shadow: 2px 2px 3px var(--standardButtonShadowColor)
     }
+
     &:active {
         background-color: var(--highlightBackgroundColor);
         box-shadow: 2px 2px 3px var(--standardButtonShadowColor), inset 0 0 3px 2px var(--standardButtonShadowColor);

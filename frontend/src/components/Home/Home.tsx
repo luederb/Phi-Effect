@@ -9,8 +9,8 @@ export default function Home() {
     const [userData, setUserData] = useState<User>({
         id: "",
         name: "",
-        givenName: "",
-        familyName: "",
+        firstName: "",
+        lastName: "",
         email: "",
         picture: ""
     });
