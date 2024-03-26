@@ -24,8 +24,8 @@ class UserTest {
 
         assertEquals("123", user.getId());
         assertEquals("John Doe", user.getName());
-        assertEquals("John", user.getGivenName());
-        assertEquals("Doe", user.getFamilyName());
+        assertEquals("John", user.getFirstName());
+        assertEquals("Doe", user.getLastName());
         assertEquals("john.doe@example.com", user.getEmail());
         assertEquals("https://example.com/john.jpg", user.getPicture());
         assertTrue(user.isNewUser());
@@ -81,16 +81,16 @@ class UserTest {
         User user = new User();
         user.setId("123");
         user.setName("John Doe");
-        user.setGivenName("John");
-        user.setFamilyName("Doe");
+        user.setFirstName("John");
+        user.setLastName("Doe");
         user.setEmail("john.doe@example.com");
         user.setPicture("https://example.com/john.jpg");
         user.setNewUser(true);
 
         assertEquals("123", user.getId());
         assertEquals("John Doe", user.getName());
-        assertEquals("John", user.getGivenName());
-        assertEquals("Doe", user.getFamilyName());
+        assertEquals("John", user.getFirstName());
+        assertEquals("Doe", user.getLastName());
         assertEquals("john.doe@example.com", user.getEmail());
         assertEquals("https://example.com/john.jpg", user.getPicture());
         assertTrue(user.isNewUser());

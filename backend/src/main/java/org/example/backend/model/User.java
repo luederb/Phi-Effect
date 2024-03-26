@@ -19,9 +19,11 @@ public class User {
     private static final Logger LOGGER = LoggerFactory.getLogger(User.class);
     private String id;
     private String name;
-    private String givenName;
-    private String familyName;
+    private String firstName;
+    private String lastName;
     private String email;
+    private Number phone;
+    private String bio;
     private String picture;
     private boolean isNewUser;
 
@@ -33,9 +35,11 @@ public class User {
         }
         this.id = getStringAttribute(attributes, "sub");
         this.name = getStringAttribute(attributes, "name");
-        this.givenName = getStringAttribute(attributes, "given_name");
-        this.familyName = getStringAttribute(attributes, "family_name");
+        this.firstName = getStringAttribute(attributes, "given_name");
+        this.lastName = getStringAttribute(attributes, "family_name");
         this.email = getStringAttribute(attributes, "email");
+        this.phone = null;
+        this.bio = null;
         this.picture = getStringAttribute(attributes, "picture");
         this.isNewUser = true;
     }
