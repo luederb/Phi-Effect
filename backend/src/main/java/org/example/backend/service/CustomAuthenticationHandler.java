@@ -1,6 +1,5 @@
 package org.example.backend.service;
 
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +23,7 @@ public class CustomAuthenticationHandler implements AuthenticationSuccessHandler
     private final UserRepository userRepository;
 
     @Override
-    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
+    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException{
         var principle = (OAuth2User) authentication.getPrincipal();
         String id = principle.getAttributes().get("sub").toString();
         User user = userRepository.findById(id).orElseThrow(() -> new NoSuchElementException("no User found"));
