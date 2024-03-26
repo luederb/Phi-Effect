@@ -1,6 +1,5 @@
 package org.example.backend.security;
 
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.example.backend.model.User;
 import org.example.backend.repository.UserRepository;
@@ -37,11 +36,7 @@ public class SecurityConfig {
                 .oauth2Login(o -> o.successHandler(customAuthenticationHandler))
                 .authorizeHttpRequests(a -> a
                         .requestMatchers(HttpMethod.GET, "/api/users/me").authenticated()
-                        .anyRequest().permitAll())
-                .logout(logout -> logout.logoutUrl("/api/user/logout")
-                        .logoutSuccessHandler((request, response, authentication) ->
-                                response.setStatus(HttpServletResponse.SC_OK)
-                        ));
+                        .anyRequest().permitAll());
         return http.build();
     }
 

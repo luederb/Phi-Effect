@@ -36,7 +36,6 @@ export default function Home() {
                 <>
                     <h2>Welcome Lüder</h2>
                     <p>Your upcoming events are:</p>
-                    <button>Logout</button>
                 </>
                 :
                 <HomeWithoutLogin/>}
