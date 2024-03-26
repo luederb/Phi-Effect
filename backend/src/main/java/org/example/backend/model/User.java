@@ -9,6 +9,8 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 
+import static org.example.backend.util.AttributeUtils.getStringAttribute;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -36,18 +38,5 @@ public class User {
         this.email = getStringAttribute(attributes, "email");
         this.picture = getStringAttribute(attributes, "picture");
         this.isNewUser = true;
-    }
-
-    private String getStringAttribute(Map<String, Object> attributes, String key) {
-        if (!attributes.containsKey(key)) {
-            LOGGER.error("Missing attribute: {}", key);
-            throw new IllegalArgumentException("Missing attribute: " + key);
-        }
-        Object value = attributes.get(key);
-        if (!(value instanceof String)) {
-            LOGGER.error("Expected a String for attribute: {}", key);
-            throw new IllegalArgumentException("Expected a String for attribute: " + key);
-        }
-        return (String) value;
     }
 }
