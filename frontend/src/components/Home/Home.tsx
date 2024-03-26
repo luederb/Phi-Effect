@@ -1,4 +1,5 @@
 import "./Home.css";
+import '../../Logger/Logger.tsx';
 
 import HomeWithoutLogin from "./HomeWithoutLogin/HomeWithoutLogin";
 import axios from "axios";
@@ -6,6 +7,7 @@ import {useEffect, useState} from "react";
 import {User} from "../../Types/User.ts";
 
 export default function Home() {
+
     const [userData, setUserData] = useState<User>({
         id: "",
         name: "",
@@ -19,10 +21,10 @@ export default function Home() {
         axios.get('/api/users/me')
             .then(response => {
                 setUserData(response.data)
-                console.log("User data loaded:", response.data);
+                Logger.log("User data loaded:", response.data);
             })
             .catch((error) => {
-                console.error("An error occurred while loading user data:", error);
+                Logger.error("An error occurred while loading user data:", error);
             });
     }
 
