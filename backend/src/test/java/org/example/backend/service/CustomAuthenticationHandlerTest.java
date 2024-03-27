@@ -48,6 +48,8 @@ class CustomAuthenticationHandlerTest {
         attributes.put("given_name", "John");
         attributes.put("family_name", "Doe");
         attributes.put("email", "lueder@gmail.com");
+        attributes.put("phone", 1234567890);
+        attributes.put("bio", "I am a software engineer");
         attributes.put("picture", "https://example.com/john.jpg");
         attributes.put("newUser", true);
         when(authentication.getPrincipal()).thenReturn(oAuth2User);
@@ -56,9 +58,11 @@ class CustomAuthenticationHandlerTest {
         User user = new User();
         user.setId("123");
         user.setName("John Doe");
-        user.setGivenName("John");
-        user.setFamilyName("Doe");
+        user.setFirstName("John");
+        user.setLastName("Doe");
         user.setEmail("lueder@gmail.com");
+        user.setPhone(1234567890);
+        user.setBio("I am a software engineer");
         user.setPicture("https://example.com/john.jpg");
         user.setNewUser(true);
 
@@ -87,6 +91,8 @@ class CustomAuthenticationHandlerTest {
             attributes.put("given_name", "John");
             attributes.put("family_name", "Doe");
             attributes.put("email", "lueder@gmail.com");
+            attributes.put("phone", 1234567890);
+            attributes.put("bio", "I am a software engineer");
             attributes.put("picture", "https://example.com/john.jpg");
             attributes.put("newUser", false);
             when(authentication.getPrincipal()).thenReturn(oAuth2User);
@@ -95,9 +101,11 @@ class CustomAuthenticationHandlerTest {
             User user = new User();
             user.setId("123");
             user.setName("John Doe");
-            user.setGivenName("John");
-            user.setFamilyName("Doe");
+            user.setFirstName("John");
+            user.setLastName("Doe");
             user.setEmail("lueder@gmail.com");
+            user.setPhone(1234567890);
+            user.setBio("I am a software engineer");
             user.setPicture("https://example.com/john.jpg");
             user.setNewUser(true);
 
@@ -105,7 +113,7 @@ class CustomAuthenticationHandlerTest {
 
             customAuthenticationHandler.onAuthenticationSuccess(request, response, authentication);
 
-            verify(response).sendRedirect("http://localhost:5173/complete-profile");
+            verify(response).sendRedirect("http://localhost:5173/complete-profile/123");
             ArgumentCaptor<User> userCaptor = ArgumentCaptor.forClass(User.class);
             verify(userRepository).save(userCaptor.capture());
             User savedUser = userCaptor.getValue();

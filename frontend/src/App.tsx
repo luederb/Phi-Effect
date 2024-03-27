@@ -12,7 +12,7 @@ export default function App() {
         <Layout>
             <Routes>
                 <Route path="/" element={<Home/>}/>
-                <Route path="/complete-profile" element={<CompleteProfile/>}/>
+                <Route path="/complete-profile/:id" element={<CompleteProfile/>}/>
                 <Route path="/projects" element={<Projects/>}/>
                 <Route path="/competitions" element={<Competitions/>}/>
                 <Route path="/network" element={<Network/>}/>
