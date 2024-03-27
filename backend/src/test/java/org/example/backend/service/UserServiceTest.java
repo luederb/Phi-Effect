@@ -41,6 +41,7 @@ class UserServiceTest {
         user.setName("Test User");
 
         when(userRepository.save(user)).thenReturn(user);
+        when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
 
         User savedUser = userService.saveUser(user);
 
