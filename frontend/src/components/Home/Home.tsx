@@ -1,10 +1,10 @@
 import "./Home.css";
-import '../../Logger/Logger.tsx';
 
 import HomeWithoutLogin from "./HomeWithoutLogin/HomeWithoutLogin";
 import axios from "axios";
 import {useEffect, useState} from "react";
 import {User} from "../../Types/User.ts";
+import {Logger} from "../../Logger/Logger.tsx";
 
 export default function Home() {
 

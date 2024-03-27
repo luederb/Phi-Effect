@@ -1,5 +1,5 @@
 import "./CompleteProfile.css";
-import '../../Logger/Logger.tsx';
+import {Logger} from "../../Logger/Logger.tsx";
 import {useNavigate, useParams} from "react-router-dom";
 import {User} from "../../Types/User.ts";
 import React, {useEffect, useState} from "react";
@@ -92,7 +92,7 @@ export default function CompleteProfile() {
                 <div className="label-with-input-field">
                     <label htmlFor="phone">Phone:</label>
                     <input type="tel" id="phone" name="phone" placeholder="enter your phone number"
-                           value={googleUserData.phone} onChange={onProfilDataInputChange}/>
+                           value={googleUserData.phone === 0 ? undefined : googleUserData.phone} onChange={onProfilDataInputChange}/>
                 </div>
                 <div className="label-with-input-field">
                     <label htmlFor="bio">Bio:</label>
