@@ -1,0 +1,24 @@
+header {
+    grid-area: header;
+    background-color: var(--standardBackgroundColor);
+    color: var(--standardFondColor);
+    display: grid;
+    grid-template-columns: 4fr 1fr;
+    align-items: center;
+    border-radius: 5px 5px 0 0;
+    border-bottom: 3px solid var(--highlightBackgroundColor);
+}
+
+header a {
+    display: flex;
+    justify-content: center;
+}
+
+header a:hover {
+    background-color: var(--standardBackgroundColor);
+}
+
+header a:hover .icon-svg {
+    stroke: var(--standardIconStrokeHoverColor);
+    fill: var(--standardIconFillHoverColor);
+}

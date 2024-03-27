@@ -18,6 +18,9 @@
     --standardButtonHoverBackgroundColor: #682D36;
     --standardButtonShadowColor: #47151D;
     --standardButtonActiveBackgroundColor: #e5e5e5;
+    --standardIconStrokeColor: #671D28;
+    --standardIconFillHoverColor: #325062;
+    --standardIconStrokeHoverColor: #634145;
 }
 
 html {
@@ -43,16 +46,6 @@ body {
     grid-template-columns: 1fr;
     grid-template-rows: auto 1fr auto;
 
-}
-
-header {
-    grid-area: header;
-    background-color: var(--standardBackgroundColor);
-    color: var(--standardFondColor);
-    display: flex;
-    justify-content: space-around;
-    border-radius: 5px 5px 0 0;
-    border-bottom: 3px solid var(--highlightBackgroundColor);
 }
 
 main {
@@ -90,6 +83,7 @@ a {
 
 a:hover {
     background-color: var(--standardButtonHoverBackgroundColor);
+    cursor: pointer;
 }
 
 button, .link-as-button {

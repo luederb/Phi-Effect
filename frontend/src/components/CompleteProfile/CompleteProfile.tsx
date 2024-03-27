@@ -1,20 +1,19 @@
 import "./CompleteProfile.css";
 import {Logger} from "../../Logger/Logger.tsx";
-import {useNavigate, useParams} from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 import {User} from "../../Types/User.ts";
 import React, {useEffect, useState} from "react";
 import axios from "axios";
 
-
-export default function CompleteProfile() {
+type UserProps = {
+    setCurrentUserId: (id: string) => void;
+}
+export default function CompleteProfile({setCurrentUserId}: Readonly<UserProps>) {
     const navigate = useNavigate();
 
     function navigateToHomepage() {
         navigate("/");
     }
-
-    const params = useParams();
-    const id: string | undefined = params.id;
 
     const [googleUserData, setGoogleUserData] = useState<User>({
         id: "",
@@ -28,16 +27,22 @@ export default function CompleteProfile() {
     });
     const [isLoading, setIsLoading] = useState(true);
 
-    function fetchUserData() {
+    function loadUser() {
         setIsLoading(true);
-        axios.get(`/api/users/${id}`)
+        axios.get("/api/users/me")
             .then(response => {
-                setGoogleUserData(response.data)
-                Logger.log("GoogleUserData: ", response.data)
+                response.data.newUser = false;
+                setGoogleUserData(response.data);
+                setCurrentUserId(response.data.id);
+                Logger.log("User data loaded:", response.data);
             })
-            .catch(error => Logger.log("Error fetching data: ", error))
+            .catch((error) =>
+                Logger.error("An error occurred while loading user data:", error))
             .finally(() => setIsLoading(false))
     }
+    useEffect(() => {
+        loadUser();
+    }, []);
 
     function onProfilDataInputChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
         setGoogleUserData({
@@ -47,7 +52,7 @@ export default function CompleteProfile() {
     }
 
     function updateUserData() {
-        axios.put(`/api/users/${id}`, googleUserData)
+        axios.put(`/api/users/${googleUserData.id}`, googleUserData)
             .then(response => {
                 Logger.log("Response: ", response.data);
                 navigateToHomepage();
@@ -55,10 +60,6 @@ export default function CompleteProfile() {
             .catch(error => Logger.log("Error fetching data: ", error))
 
     }
-
-    useEffect(() => {
-        fetchUserData();
-    }, []);
 
 
     if (isLoading) {
@@ -92,7 +93,8 @@ export default function CompleteProfile() {
                 <div className="label-with-input-field">
                     <label htmlFor="phone">Phone:</label>
                     <input type="tel" id="phone" name="phone" placeholder="enter your phone number"
-                           value={googleUserData.phone === 0 ? undefined : googleUserData.phone} onChange={onProfilDataInputChange}/>
+                           value={googleUserData.phone === 0 ? undefined : googleUserData.phone}
+                           onChange={onProfilDataInputChange}/>
                 </div>
                 <div className="label-with-input-field">
                     <label htmlFor="bio">Bio:</label>
