@@ -1,4 +1,5 @@
 import "./CompleteProfile.css";
+import '../../Logger/Logger.tsx';
 import {useNavigate, useParams} from "react-router-dom";
 import {User} from "../../Types/User.ts";
 import React, {useEffect, useState} from "react";
@@ -32,9 +33,9 @@ export default function CompleteProfile() {
         axios.get(`/api/users/${id}`)
             .then(response => {
                 setGoogleUserData(response.data)
-                console.log("GoogleUserData: ", response.data)
+                Logger.log("GoogleUserData: ", response.data)
             })
-            .catch(error => console.log("Error fetching data: ", error))
+            .catch(error => Logger.log("Error fetching data: ", error))
             .finally(() => setIsLoading(false))
     }
 
@@ -42,16 +43,16 @@ export default function CompleteProfile() {
         setGoogleUserData({
             ...googleUserData, [e.target.name]: e.target.value
         })
-        console.log("GoogleUserData: ", googleUserData)
+        Logger.log("GoogleUserData: ", googleUserData)
     }
 
     function updateUserData() {
         axios.put(`/api/users/${id}`, googleUserData)
             .then(response => {
-                console.log("Response: ", response.data);
+                Logger.log("Response: ", response.data);
                 navigateToHomepage();
             })
-            .catch(error => console.log("Error fetching data: ", error))
+            .catch(error => Logger.log("Error fetching data: ", error))
 
     }
 
