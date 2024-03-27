@@ -38,8 +38,8 @@ public class User {
         this.firstName = getStringAttribute(attributes, "given_name");
         this.lastName = getStringAttribute(attributes, "family_name");
         this.email = getStringAttribute(attributes, "email");
-        this.phone = null;
-        this.bio = null;
+        this.phone = 0;
+        this.bio = "";
         this.picture = getStringAttribute(attributes, "picture");
         this.isNewUser = true;
     }

@@ -32,7 +32,7 @@ public class CustomAuthenticationHandler implements AuthenticationSuccessHandler
         } else {
             user.setNewUser(false);
             userRepository.save(user);
-            response.sendRedirect( appUrl + "/complete-profile/" + id);
+            response.sendRedirect( appUrl + "/complete-profile");
         }
 
     }

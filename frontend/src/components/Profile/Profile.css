@@ -1,0 +1,23 @@
+.name-and-avatar {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-around;
+    margin-block: 30px;
+}
+.avatar {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+}
+.profile-data {
+    display: grid;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+.profile-element {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    justify-content: center;
+}
