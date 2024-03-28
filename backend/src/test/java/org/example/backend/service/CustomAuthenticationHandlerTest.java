@@ -113,7 +113,7 @@ class CustomAuthenticationHandlerTest {
 
             customAuthenticationHandler.onAuthenticationSuccess(request, response, authentication);
 
-            verify(response).sendRedirect("http://localhost:5173/complete-profile/123");
+            verify(response).sendRedirect("http://localhost:5173/complete-profile");
             ArgumentCaptor<User> userCaptor = ArgumentCaptor.forClass(User.class);
             verify(userRepository).save(userCaptor.capture());
             User savedUser = userCaptor.getValue();
