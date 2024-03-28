@@ -4,6 +4,8 @@ import HomeWithoutLogin from "./HomeWithoutLogin/HomeWithoutLogin";
 import axios from "axios";
 import {useEffect, useState} from "react";
 import {User} from "../../Types/User.ts";
+import ProjectsOverviewTable from "../ProjectsOverviewTable/ProjectsOverviewTable.tsx";
+import FriendRequests from "../FriendRequests/FriendRequests.tsx";
 import {Logger} from "../../Logger/Logger.tsx";
 
 type HomeProps = {
@@ -17,11 +19,11 @@ export default function Home({setCurrentUserId}: Readonly<HomeProps>){
         firstName: "",
         lastName: "",
         email: "",
-        picture: "",
+        picture: ""
     });
 
     function loadUser() {
-        axios.get('/api/users/me')
+        axios.get("/api/users/me")
             .then(response => {
                 response.data.newUser = false;
                 setUserData(response.data)
@@ -41,8 +43,9 @@ export default function Home({setCurrentUserId}: Readonly<HomeProps>){
         <div className="home-container">
             {userData.name ?
                 <>
-                    <h2>Welcome Lüder</h2>
-                    <p>Your upcoming events are:</p>
+                    <h2>Welcome, Lüder</h2>
+                    <ProjectsOverviewTable/>
+                    <FriendRequests/>
                 </>
                 :
                 <HomeWithoutLogin/>}

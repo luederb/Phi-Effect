@@ -1,0 +1,33 @@
+table {
+    border: 2px solid var(--highlightColor);
+    border-radius: 10px;
+    border-spacing: 0;
+    text-align: left;
+}
+
+thead > tr > th {
+    border-bottom: 2px solid var(--highlightColor);
+    border-right: 2px solid var(--highlightColor);
+    text-align: center;
+}
+thead > tr > th:last-of-type {
+    border-right: none;
+}
+tbody > tr > th, td {
+    font-weight: normal;
+    border-bottom: 1px solid var(--highlightColor);
+    background-color: 1px solid var(--highlightColor);
+    vertical-align: bottom;
+    padding-inline: 5px;
+}
+tbody > tr:last-of-type > th, tbody > tr:last-of-type > td {
+    border-bottom: none;
+}
+tbody > tr th, tbody > tr > td:first-of-type {
+    border-right:  1px solid var(--highlightColor);
+}
+
+caption {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
