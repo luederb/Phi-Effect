@@ -8,8 +8,9 @@ import {Logger} from "../../Logger/Logger.tsx";
 
 type HomeProps = {
     setCurrentUserId: (id: string) => void;
+    handleLogin: () => void;
 }
-export default function Home({setCurrentUserId}: Readonly<HomeProps>){
+export default function Home({setCurrentUserId, handleLogin}: Readonly<HomeProps>) {
 
     const [userData, setUserData] = useState<User>({
         id: "",
@@ -21,7 +22,7 @@ export default function Home({setCurrentUserId}: Readonly<HomeProps>){
     });
 
     function loadUser() {
-        axios.get('/api/users/me')
+        axios.get("/api/users/me")
             .then(response => {
                 response.data.newUser = false;
                 setUserData(response.data)
@@ -33,9 +34,11 @@ export default function Home({setCurrentUserId}: Readonly<HomeProps>){
             });
     }
 
+
     useEffect(() => {
         loadUser();
-    }, []);
+        // eslint-disable-next-line
+        }, []);
 
     return (
         <div className="home-container">
@@ -45,7 +48,7 @@ export default function Home({setCurrentUserId}: Readonly<HomeProps>){
                     <p>Your upcoming events are:</p>
                 </>
                 :
-                <HomeWithoutLogin/>}
+                <HomeWithoutLogin handleLogin={handleLogin}/>}
         </div>
     )
 }

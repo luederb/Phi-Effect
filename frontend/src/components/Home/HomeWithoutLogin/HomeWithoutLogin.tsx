@@ -1,14 +1,12 @@
 import './HomeWithoutLogin.css';
 import {Link} from "react-router-dom";
-import {Logger} from "../../../Logger/Logger.tsx";
 
+type HomeWithoutLoginProps = {
+    handleLogin: () => void;
+}
 
-export default function HomeWithoutLogin() {
-    function login() {
-        const host = window.location.host === 'localhost:5173' ? 'http://localhost:8080': window.location.origin
-        window.open(host + '/oauth2/authorization/google', '_self')
-        Logger.log("I want to sign in with google");
-    }
+export default function HomeWithoutLogin({handleLogin}: Readonly<HomeWithoutLoginProps>){
+
     return (
         <div className="homeWithoutLogin-container">
             <h2>Welcome</h2>
@@ -20,7 +18,7 @@ export default function HomeWithoutLogin() {
             <p>To create your own projects and competitions or to connect to other filmmakers, please sign in with your
                 Google account:</p>
             <div>
-                <button onClick={login}>Sign in</button>
+                <button onClick={handleLogin}>Sign in</button>
             </div>
         </div>
     )
