@@ -20,6 +20,7 @@ export default function Profile({currentUserId, setCurrentUserId, handleLogin}: 
     }
 
     const [isLoading, setIsLoading] = useState(true);
+    const [userExists, setUserExists] = useState(true);
     const [user, setUser] = useState<User>({
         id: "",
         name: "",
@@ -35,10 +36,14 @@ export default function Profile({currentUserId, setCurrentUserId, handleLogin}: 
         setIsLoading(true);
         axios.get(`/api/users/${currentUserId}`)
             .then(response => {
-                setUser(response.data)
-                Logger.log("User: ", response.data)
+                setUser(response.data);
+                setUserExists(true);
+                Logger.log("User: ", response.data);
             })
-            .catch(error => Logger.log("Error fetching data: ", error))
+            .catch(error => {
+                Logger.log("Error fetching data: ", error);
+
+            })
             .finally(() => setIsLoading(false))
     }
 
@@ -57,6 +62,7 @@ export default function Profile({currentUserId, setCurrentUserId, handleLogin}: 
                     picture: ""
                 })
                 setCurrentUserId("");
+                setUserExists(false);
             })
             .catch(error => Logger.log("Error deleting user: ", error))
     }
@@ -85,59 +91,63 @@ export default function Profile({currentUserId, setCurrentUserId, handleLogin}: 
             </div>
         )
     }
-    if (!user) {
+
+    if(!userExists) {
         return (
-            <div>
-                <h1>User not found</h1>
+            <div className="profile-without-login">
+                <p>You don't have a profile, yet. Please sign in to view your profile</p>
+                <div>
+                    <button onClick={handleLogin}>Login</button>
+                </div>
+            </div>
+        )
+    }
+
+    if (user.id === "") {
+        return (
+            <div className="profile-without-login">
+                <p>Please log in to view your profile</p>
+                <div>
+                    <button onClick={handleLogin}>Login</button>
+                </div>
             </div>
         )
 
     }
     return (
-        <>
-            {currentUserId === "" ?
-                <div className="profile-without-login">
-                    <p>Please log in to view your profile</p>
-                    <div>
-                        <button onClick={handleLogin}>Login</button>
+        <div>
+            <div className="profile">
+                <div className="name-and-avatar">
+                    <h2>{user.name}</h2>
+                    <img className="avatar" src={user.picture} alt="avatar"/>
+                </div>
+                <div className="profile-data">
+                    <div className="profile-element">
+                        <p>First Name: </p>
+                        <p>{user.firstName}</p>
+                    </div>
+                    <div className="profile-element">
+                        <p>Last Name: </p>
+                        <p>{user.lastName}</p>
+                    </div>
+                    <div className="profile-element">
+                        <p>E-Mail: </p>
+                        <p>{user.email}</p>
+                    </div>
+                    <div className="profile-element">
+                        <p>Phone: </p>
+                        <p>0{user.phone}</p>
+                    </div>
+                    <div className="profile-element">
+                        <p>Bio: </p>
+                        <p>{user.bio}</p>
                     </div>
                 </div>
-                :
-                <div>
-                    <div className="profile">
-                        <div className="name-and-avatar">
-                            <h2>{user.name}</h2>
-                            <img className="avatar" src={user.picture} alt="avatar"/>
-                        </div>
-                        <div className="profile-data">
-                            <div className="profile-element">
-                                <p>First Name: </p>
-                                <p>{user.firstName}</p>
-                            </div>
-                            <div className="profile-element">
-                                <p>Last Name: </p>
-                                <p>{user.lastName}</p>
-                            </div>
-                            <div className="profile-element">
-                                <p>E-Mail: </p>
-                                <p>{user.email}</p>
-                            </div>
-                            <div className="profile-element">
-                                <p>Phone: </p>
-                                <p>0{user.phone}</p>
-                            </div>
-                            <div className="profile-element">
-                                <p>Bio: </p>
-                                <p>{user.bio}</p>
-                            </div>
-                        </div>
-                        <div className="profile-buttons">
-                            <button onClick={handleLogout}>Logout</button>
-                            <button onClick={deleteUserData}>Delete Profile</button>
-                        </div>
-                    </div>
+                <div className="profile-buttons">
+                    <button onClick={handleLogout}>Logout</button>
+                    <button onClick={deleteUserData}>Delete Profile</button>
                 </div>
-            }
-        </>
+            </div>
+        </div>
     );
 }
