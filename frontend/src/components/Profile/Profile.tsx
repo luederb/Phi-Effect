@@ -31,7 +31,6 @@ export default function Profile({currentUserId, setCurrentUserId, handleLogin}: 
         picture: "",
     });
 
-
     function fetchUserData() {
         setIsLoading(true);
         axios.get(`/api/users/${currentUserId}`)
@@ -41,6 +40,25 @@ export default function Profile({currentUserId, setCurrentUserId, handleLogin}: 
             })
             .catch(error => Logger.log("Error fetching data: ", error))
             .finally(() => setIsLoading(false))
+    }
+
+    function deleteUserData() {
+        axios.delete(`/api/users/${currentUserId}`)
+            .then(response => {
+                Logger.log("User deleted: ", response.data)
+                setUser({
+                    id: "",
+                    name: "",
+                    firstName: "",
+                    lastName: "",
+                    email: "",
+                    phone: 0,
+                    bio: "",
+                    picture: ""
+                })
+                setCurrentUserId("");
+            })
+            .catch(error => Logger.log("Error deleting user: ", error))
     }
 
     const handleLogout = () => {
@@ -115,6 +133,7 @@ export default function Profile({currentUserId, setCurrentUserId, handleLogin}: 
                         </div>
                         <div className="profile-buttons">
                             <button onClick={handleLogout}>Logout</button>
+                            <button onClick={deleteUserData}>Delete Profile</button>
                         </div>
                     </div>
                 </div>
