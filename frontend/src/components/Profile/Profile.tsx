@@ -54,10 +54,10 @@ export default function Profile({currentUserId}: Readonly<ProfileProps>) {
     return (
         <div>
             <div className="profile">
-                    <div className="name-and-avatar">
-                        <h2>{user.name}</h2>
-                        <img className="avatar" src={user.picture} alt="avatar"/>
-                    </div>
+                <div className="name-and-avatar">
+                    <h2>{user.name}</h2>
+                    <img className="avatar" src={user.picture} alt="avatar"/>
+                </div>
                 <div className="profile-data">
                     <div className="profile-element">
                         <p>First Name: </p>
@@ -79,6 +79,9 @@ export default function Profile({currentUserId}: Readonly<ProfileProps>) {
                         <p>Bio: </p>
                         <p>{user.bio}</p>
                     </div>
+                </div>
+                <div className="profile-buttons">
+                    <button>Logout</button>
                 </div>
             </div>
         </div>

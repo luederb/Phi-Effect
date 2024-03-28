@@ -1,3 +1,7 @@
+.profile {
+    position: relative;
+}
+
 .name-and-avatar {
     display: flex;
     flex-direction: row;
@@ -20,4 +24,9 @@
     display: grid;
     grid-template-columns: 1fr 2fr;
     justify-content: center;
+}
+
+.profile-buttons {
+    display: flex;
+    justify-content: space-around;
 }
