@@ -1,5 +1,4 @@
 import "./Home.css";
-import "../../Logger/Logger.tsx";
 
 import HomeWithoutLogin from "./HomeWithoutLogin/HomeWithoutLogin";
 import axios from "axios";
