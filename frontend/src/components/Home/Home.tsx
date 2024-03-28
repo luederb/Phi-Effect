@@ -1,12 +1,15 @@
 import "./Home.css";
-import '../../Logger/Logger.tsx';
 
 import HomeWithoutLogin from "./HomeWithoutLogin/HomeWithoutLogin";
 import axios from "axios";
 import {useEffect, useState} from "react";
 import {User} from "../../Types/User.ts";
+import {Logger} from "../../Logger/Logger.tsx";
 
-export default function Home() {
+type HomeProps = {
+    setCurrentUserId: (id: string) => void;
+}
+export default function Home({setCurrentUserId}: Readonly<HomeProps>){
 
     const [userData, setUserData] = useState<User>({
         id: "",
@@ -14,13 +17,15 @@ export default function Home() {
         firstName: "",
         lastName: "",
         email: "",
-        picture: ""
+        picture: "",
     });
 
     function loadUser() {
         axios.get('/api/users/me')
             .then(response => {
+                response.data.newUser = false;
                 setUserData(response.data)
+                setCurrentUserId(response.data.id);
                 Logger.log("User data loaded:", response.data);
             })
             .catch((error) => {

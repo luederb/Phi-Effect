@@ -1,6 +1,6 @@
 import './HomeWithoutLogin.css';
-import '../../../Logger/Logger.tsx';
 import {Link} from "react-router-dom";
+import {Logger} from "../../../Logger/Logger.tsx";
 
 
 export default function HomeWithoutLogin() {
