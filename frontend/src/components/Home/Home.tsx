@@ -1,9 +1,11 @@
 import "./Home.css";
+import '../../Logger/Logger.tsx';
 
 import HomeWithoutLogin from "./HomeWithoutLogin/HomeWithoutLogin";
 import axios from "axios";
 import {useEffect, useState} from "react";
 import {User} from "../../Types/User.ts";
+import ProjectsOverviewTable from "../ProjectsOverviewTable/ProjectsOverviewTable.tsx";
 import {Logger} from "../../Logger/Logger.tsx";
 
 type HomeProps = {
@@ -17,7 +19,7 @@ export default function Home({setCurrentUserId}: Readonly<HomeProps>){
         firstName: "",
         lastName: "",
         email: "",
-        picture: "",
+        picture: ""
     });
 
     function loadUser() {
@@ -42,7 +44,7 @@ export default function Home({setCurrentUserId}: Readonly<HomeProps>){
             {userData.name ?
                 <>
                     <h2>Welcome Lüder</h2>
-                    <p>Your upcoming events are:</p>
+<ProjectsOverviewTable/>
                 </>
                 :
                 <HomeWithoutLogin/>}
