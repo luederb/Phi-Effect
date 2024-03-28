@@ -1,11 +1,12 @@
 import "./Home.css";
-import '../../Logger/Logger.tsx';
+import "../../Logger/Logger.tsx";
 
 import HomeWithoutLogin from "./HomeWithoutLogin/HomeWithoutLogin";
 import axios from "axios";
 import {useEffect, useState} from "react";
 import {User} from "../../Types/User.ts";
 import ProjectsOverviewTable from "../ProjectsOverviewTable/ProjectsOverviewTable.tsx";
+import FriendRequests from "../FriendRequests/FriendRequests.tsx";
 
 export default function Home() {
 
@@ -19,7 +20,7 @@ export default function Home() {
     });
 
     function loadUser() {
-        axios.get('/api/users/me')
+        axios.get("/api/users/me")
             .then(response => {
                 setUserData(response.data)
                 Logger.log("User data loaded:", response.data);
@@ -37,8 +38,9 @@ export default function Home() {
         <div className="home-container">
             {userData.name ?
                 <>
-                    <h2>Welcome Lüder</h2>
-<ProjectsOverviewTable/>
+                    <h2>Welcome, Lüder</h2>
+                    <ProjectsOverviewTable/>
+                    <FriendRequests/>
                 </>
                 :
                 <HomeWithoutLogin/>}

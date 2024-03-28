@@ -1,0 +1,29 @@
+.friend-request-list {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.friend-request-list h3 {
+    margin: 10px 0 0 0;
+
+    padding: 0;
+}
+.friend-request-list ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+.friend-request {
+    display: grid;
+    grid-template-columns: 3fr 2fr;
+    margin-block: 5px;
+    border: 1px solid var(--highlightColor);
+    border-radius: 5px;
+    column-gap: 5px;
+}
+.friend-request p {
+    align-content: center;
+}
+.friend-request a {
+    padding: 5px;
+}

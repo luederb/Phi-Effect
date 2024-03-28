@@ -10,7 +10,7 @@
 
     --htmlBackgroundColor: #575757;
     --standardBackgroundColor: #2E4B5A;
-    --highlightBackgroundColor: #671D28;
+    --highlightColor: #671D28;
 
     --standardFondColor: #FDFDF1;
     --standardHoverFondColor: #8e8d8d;
@@ -71,12 +71,12 @@ nav a {
     padding-block: 5px;
     text-align: center;
     border-radius: 0 0 5px 5px;
-    background-color: var(--highlightBackgroundColor);
+    background-color: var(--highlightColor);
 }
 
 main {
     grid-area: main;
-
+    padding-inline: 10px;
     max-width: 430px;
     min-height: 600px;
     overflow: auto;
@@ -121,18 +121,18 @@ button, .link-as-button {
     text-decoration: none;
     border: none;
     border-radius: 5px;
-    background-color: var(--highlightBackgroundColor);
+    background-color: var(--highlightColor);
     color: var(--standardFondColor);
     box-shadow: 2px 2px 3px var(--standardButtonShadowColor), inset 0 0 5px #A04250;
 
     &:hover {
         cursor: pointer;
-        background-color: var(--highlightBackgroundColor);
+        background-color: var(--highlightColor);
         box-shadow: 2px 2px 3px var(--standardButtonShadowColor)
     }
 
     &:active {
-        background-color: var(--highlightBackgroundColor);
+        background-color: var(--highlightColor);
         box-shadow: 2px 2px 3px var(--standardButtonShadowColor), inset 0 0 3px 2px var(--standardButtonShadowColor);
     }
 }
