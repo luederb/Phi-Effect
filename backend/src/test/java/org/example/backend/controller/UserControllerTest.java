@@ -11,8 +11,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.mockito.Mockito.when;
 
@@ -59,5 +58,10 @@ class UserControllerTest {
         when(userService.saveUser(user)).thenReturn(user);
 
         mockMvc.perform(put("/api/users/1").contentType(MediaType.APPLICATION_JSON).content(new ObjectMapper().writeValueAsString(user))).andExpect(status().isOk());
+    }
+    @Test
+    void logoutTest() throws Exception {
+        mockMvc.perform(post("/api/users/logout"))
+                .andExpect(status().isOk());
     }
 }
