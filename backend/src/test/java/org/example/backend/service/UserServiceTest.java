@@ -10,7 +10,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @SpringBootTest
 class UserServiceTest {
@@ -47,5 +47,13 @@ class UserServiceTest {
 
         assertEquals("1", savedUser.getId());
         assertEquals("Test User", savedUser.getName());
+    }
+
+    @Test
+    void deleteUserByIdTest() {
+        String userId = "1";
+        doNothing().when(userRepository).deleteById(userId);
+        userService.deleteUserById(userId);
+        verify(userRepository, times(1)).deleteById(userId);
     }
 }

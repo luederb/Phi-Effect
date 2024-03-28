@@ -7,8 +7,9 @@ import {Logger} from "../../Logger/Logger.tsx";
 
 type ProfileProps = {
     currentUserId: string;
+    setCurrentUserId: (id: string) => void;
 }
-export default function Profile({currentUserId}: Readonly<ProfileProps>) {
+export default function Profile({currentUserId, setCurrentUserId}: Readonly<ProfileProps>) {
     const [isLoading, setIsLoading] = useState(true);
     const [user, setUser] = useState<User>({
         id: "",
@@ -30,6 +31,25 @@ export default function Profile({currentUserId}: Readonly<ProfileProps>) {
             })
             .catch(error => Logger.log("Error fetching data: ", error))
             .finally(() => setIsLoading(false))
+    }
+
+    function deleteUserData() {
+        axios.delete(`/api/users/${currentUserId}`)
+            .then(response => {
+                Logger.log("User deleted: ", response.data)
+                setUser({
+                    id: "",
+                    name: "",
+                    firstName: "",
+                    lastName: "",
+                    email: "",
+                    phone: 0,
+                    bio: "",
+                    picture: ""
+                })
+                setCurrentUserId("");
+            })
+            .catch(error => Logger.log("Error deleting user: ", error))
     }
 
     useEffect(() => {
@@ -80,6 +100,7 @@ export default function Profile({currentUserId}: Readonly<ProfileProps>) {
                         <p>{user.bio}</p>
                     </div>
                 </div>
+                <button onClick={deleteUserData}>Delete Profile</button>
             </div>
         </div>
     );

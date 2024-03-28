@@ -11,10 +11,9 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.mockito.Mockito.when;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -59,5 +58,14 @@ class UserControllerTest {
         when(userService.saveUser(user)).thenReturn(user);
 
         mockMvc.perform(put("/api/users/1").contentType(MediaType.APPLICATION_JSON).content(new ObjectMapper().writeValueAsString(user))).andExpect(status().isOk());
+    }
+
+    @Test
+    void deleteUserTest() throws Exception {
+        String userId = "1";
+        doNothing().when(userService).deleteUserById(userId);
+        mockMvc.perform(delete("/api/users/" + userId))
+                .andExpect(status().isOk());
+        verify(userService, times(1)).deleteUserById(userId);
     }
 }

@@ -21,7 +21,7 @@ export default function App() {
             <Routes>
                 <Route path="/" element={<Home setCurrentUserId={handleSetCurrentUserId}/>}/>
                 <Route path="/complete-profile" element={<CompleteProfile setCurrentUserId={handleSetCurrentUserId}/>}/>
-                <Route path="/profile" element={<Profile currentUserId={currentUserId}/>}/>
+                <Route path="/profile" element={<Profile currentUserId={currentUserId} setCurrentUserId={handleSetCurrentUserId}/>}/>
                 <Route path="/projects" element={<Projects/>}/>
                 <Route path="/competitions" element={<Competitions/>}/>
                 <Route path="/network" element={<Network/>}/>
