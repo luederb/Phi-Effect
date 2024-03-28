@@ -12,6 +12,7 @@ import {Logger} from "./Logger/Logger.tsx";
 export default function App() {
     const [currentUserId, setCurrentUserId] = useState<string>("");
 
+
     function handleSetCurrentUserId(id: string) {
         setCurrentUserId(id);
     }
