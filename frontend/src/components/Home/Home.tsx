@@ -5,6 +5,7 @@ import HomeWithoutLogin from "./HomeWithoutLogin/HomeWithoutLogin";
 import axios from "axios";
 import {useEffect, useState} from "react";
 import {User} from "../../Types/User.ts";
+import ProjectsOverviewTable from "../ProjectsOverviewTable/ProjectsOverviewTable.tsx";
 
 export default function Home() {
 
@@ -37,7 +38,7 @@ export default function Home() {
             {userData.name ?
                 <>
                     <h2>Welcome Lüder</h2>
-                    <p>Your upcoming events are:</p>
+<ProjectsOverviewTable/>
                 </>
                 :
                 <HomeWithoutLogin/>}
