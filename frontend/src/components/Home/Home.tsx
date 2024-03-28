@@ -10,8 +10,9 @@ import {Logger} from "../../Logger/Logger.tsx";
 
 type HomeProps = {
     setCurrentUserId: (id: string) => void;
+    handleLogin: () => void;
 }
-export default function Home({setCurrentUserId}: Readonly<HomeProps>){
+export default function Home({setCurrentUserId, handleLogin}: Readonly<HomeProps>) {
 
     const [userData, setUserData] = useState<User>({
         id: "",
@@ -35,9 +36,11 @@ export default function Home({setCurrentUserId}: Readonly<HomeProps>){
             });
     }
 
+
     useEffect(() => {
         loadUser();
-    }, []);
+        // eslint-disable-next-line
+        }, []);
 
     return (
         <div className="home-container">
@@ -48,7 +51,7 @@ export default function Home({setCurrentUserId}: Readonly<HomeProps>){
                     <FriendRequests/>
                 </>
                 :
-                <HomeWithoutLogin/>}
+                <HomeWithoutLogin handleLogin={handleLogin}/>}
         </div>
     )
 }
