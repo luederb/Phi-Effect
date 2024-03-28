@@ -1,5 +1,6 @@
 package org.example.backend.security;
 
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.example.backend.model.User;
 import org.example.backend.repository.UserRepository;
@@ -34,9 +35,14 @@ public class SecurityConfig {
                 .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.ALWAYS))
                 .exceptionHandling(e -> e.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)))
                 .oauth2Login(o -> o.successHandler(customAuthenticationHandler))
+                .logout(logout -> logout.logoutUrl("/api/users/logout")
+                        .logoutSuccessHandler((request, response, authentication) ->
+                                response.setStatus(HttpServletResponse.SC_OK)
+                        ))
                 .authorizeHttpRequests(a -> a
                         .requestMatchers(HttpMethod.GET, "/api/users/me").authenticated()
                         .anyRequest().permitAll());
+
         return http.build();
     }
 

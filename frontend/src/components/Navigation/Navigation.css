@@ -16,5 +16,5 @@ nav a {
     justify-content: center;
     align-items: center;
     border-radius: 0 0 5px 5px;
-    background-color: var(--highlightBackgroundColor);
+    background-color: var(--highlightColor);
 }

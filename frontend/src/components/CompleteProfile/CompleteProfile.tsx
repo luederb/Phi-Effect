@@ -9,8 +9,8 @@ type UserProps = {
     setCurrentUserId: (id: string) => void;
 }
 export default function CompleteProfile({setCurrentUserId}: Readonly<UserProps>) {
-    const navigate = useNavigate();
 
+    const navigate = useNavigate();
     function navigateToHomepage() {
         navigate("/");
     }
@@ -42,6 +42,7 @@ export default function CompleteProfile({setCurrentUserId}: Readonly<UserProps>)
     }
     useEffect(() => {
         loadUser();
+        // eslint-disable-next-line
     }, []);
 
     function onProfilDataInputChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {

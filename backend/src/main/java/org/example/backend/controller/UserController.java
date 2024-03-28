@@ -15,18 +15,19 @@ import org.springframework.web.server.ResponseStatusException;
 public class UserController {
 
     private final UserService service;
+
     @GetMapping("/me")
     public User getMe(@AuthenticationPrincipal OAuth2User user) {
         return new User(user.getAttributes());
     }
 
     @GetMapping("/{id}")
-    public User getUserById(@PathVariable String id){
+    public User getUserById(@PathVariable String id) {
         return service.getUserById(id);
     }
 
     @PutMapping("/{id}")
-    public User updateUserById(@PathVariable String id, @RequestBody User user){
+    public User updateUserById(@PathVariable String id, @RequestBody User user) {
         if (!user.getId().equals(id)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The id in the url does not match the request body's id");
         }
