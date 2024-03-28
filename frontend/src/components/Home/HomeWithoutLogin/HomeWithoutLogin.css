@@ -3,4 +3,9 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    text-align: center;
+    margin-block: 30px;
+}
+.projects-and-competitions-links {
+    margin-block: 40px;
 }

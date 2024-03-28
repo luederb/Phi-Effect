@@ -78,12 +78,12 @@ export default function Profile({currentUserId, setCurrentUserId, handleLogin}: 
     return (
         <>
             {currentUserId === "" ?
-                <>
+                <div className="profile-without-login">
                     <p>Please log in to view your profile</p>
                     <div>
-                        <button onClick={handleLogin}>Sign in</button>
+                        <button onClick={handleLogin}>Login</button>
                     </div>
-                </>
+                </div>
                 :
                 <div>
                     <div className="profile">

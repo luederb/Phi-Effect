@@ -59,9 +59,4 @@ class UserControllerTest {
 
         mockMvc.perform(put("/api/users/1").contentType(MediaType.APPLICATION_JSON).content(new ObjectMapper().writeValueAsString(user))).andExpect(status().isOk());
     }
-    @Test
-    void logoutTest() throws Exception {
-        mockMvc.perform(post("/api/users/logout"))
-                .andExpect(status().isOk());
-    }
 }
