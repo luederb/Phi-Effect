@@ -2,7 +2,6 @@ package org.example.backend.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.example.backend.model.Project;
-import org.example.backend.model.User;
 import org.example.backend.service.ProjectService;
 import org.springframework.web.bind.annotation.*;
 
