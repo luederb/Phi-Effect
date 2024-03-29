@@ -33,6 +33,7 @@ public class User {
             LOGGER.error("Attributes cannot be null");
             throw new IllegalArgumentException("Attributes cannot be null");
         }
+
         this.id = getStringAttribute(attributes, "sub");
         this.name = getStringAttribute(attributes, "name");
         this.firstName = getStringAttribute(attributes, "given_name");
