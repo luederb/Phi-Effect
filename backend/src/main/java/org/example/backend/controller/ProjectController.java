@@ -23,12 +23,14 @@ public class ProjectController {
             return List.of();
         }
     }
+
     @GetMapping("{id}")
-    public Project getProjectById(@PathVariable String id){
+    public Project getProjectById(@PathVariable String id) {
         return projectService.getProjectById(id);
     }
+
     @PostMapping
-    public Project saveNewProject(@RequestBody Project project){
+    public Project saveNewProject(@RequestBody Project project) {
         return projectService.saveNewProject(project);
     }
 

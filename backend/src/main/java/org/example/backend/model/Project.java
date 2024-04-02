@@ -13,11 +13,11 @@ public class Project {
     private String id;
     private String name;
     private String projectOwner;
-    private String location;
+    private String city;
     private String description;
     private String genre;
     private String status;
-    private String gpsCoordinates;
+    private GpsCoordinates gpsCoordinates;
     private String projectStart;
     private String projectEnd;
 }
