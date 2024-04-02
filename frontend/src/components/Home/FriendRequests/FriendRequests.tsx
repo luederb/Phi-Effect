@@ -1,6 +1,6 @@
 import "./FriendRequests.css";
 import {Link} from "react-router-dom";
-import {User} from "../../Types/User.ts";
+import {User} from "../../../Types/User.ts";
 import {useEffect, useState} from "react";
 
 export default function FriendRequests() {

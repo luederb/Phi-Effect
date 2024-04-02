@@ -1,0 +1,11 @@
+.edit-profile-data-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.label-with-input-field {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    justify-content: center;
+    margin: 5px;
+}

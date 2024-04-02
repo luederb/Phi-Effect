@@ -1,6 +1,6 @@
 import "./ProjectsOverviewTable.css";
 import {useEffect, useState} from "react";
-import {Event} from "../../Types/Event.ts";
+import {Event} from "../../../Types/Event.ts";
 
 export default function ProjectsOverviewTable() {
     const [events, setEvents] = useState<Event[]>([]);

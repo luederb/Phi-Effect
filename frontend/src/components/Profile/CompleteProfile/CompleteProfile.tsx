@@ -1,16 +1,13 @@
 import "./CompleteProfile.css";
-import {Logger} from "../../Logger/Logger.tsx";
+import {Logger} from "../../../Logger/Logger.tsx";
 import {useNavigate} from "react-router-dom";
-import {User} from "../../Types/User.ts";
+import {User} from "../../../Types/User.ts";
 import React, {useEffect, useState} from "react";
 import axios from "axios";
 
 export default function CompleteProfile() {
 
     const navigate = useNavigate();
-    function navigateToHomepage() {
-        navigate("/");
-    }
 
     const [googleUserData, setGoogleUserData] = useState<User>({
         id: "",
@@ -37,6 +34,7 @@ export default function CompleteProfile() {
                 Logger.error("An error occurred while loading user data:", error))
             .finally(() => setIsLoading(false))
     }
+
     useEffect(() => {
         loadUser();
         // eslint-disable-next-line
@@ -46,19 +44,16 @@ export default function CompleteProfile() {
         setGoogleUserData({
             ...googleUserData, [e.target.name]: e.target.value
         })
-        Logger.log("GoogleUserData: ", googleUserData)
     }
 
     function updateUserData() {
         axios.put(`/api/users/${googleUserData.id}`, googleUserData)
             .then(response => {
                 Logger.log("Response: ", response.data);
-                navigateToHomepage();
+                navigate("/");
             })
             .catch(error => Logger.log("Error fetching data: ", error))
-
     }
-
 
     if (isLoading) {
         return <div>Loading profile...</div>;
@@ -101,7 +96,6 @@ export default function CompleteProfile() {
                 </div>
             </form>
             <button className="submit-button" onClick={updateUserData}>Submit</button>
-
         </div>
     )
 }

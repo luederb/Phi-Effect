@@ -4,7 +4,7 @@ import Home from "./components/Home/Home.tsx";
 import Projects from "./components/Projects/Projects.tsx";
 import Competitions from "./components/Competitions/Competitions.tsx";
 import Network from "./components/Network/Network.tsx";
-import CompleteProfile from "./components/CompleteProfile/CompleteProfile.tsx";
+import CompleteProfile from "./components/Profile/CompleteProfile/CompleteProfile.tsx";
 import Profile from "./components/Profile/Profile.tsx";
 import {Logger} from "./Logger/Logger.tsx";
 

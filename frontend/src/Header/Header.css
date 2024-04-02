@@ -6,7 +6,7 @@ header {
     grid-template-columns: 4fr 1fr;
     align-items: center;
     border-radius: 5px 5px 0 0;
-    border-bottom: 3px solid var(--highlightBackgroundColor);
+    border-bottom: 3px solid var(--highlightColor);
 }
 
 header a {
