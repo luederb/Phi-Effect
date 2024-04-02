@@ -58,6 +58,7 @@ export default function Profile({handleLogin}: Readonly<ProfileProps>) {
         axios.delete(`/api/users/${currentUserId}`)
             .then(response => {
                 Logger.log("User deleted: ", response.data)
+                logout();
                 setUser({
                     id: "",
                     name: "",
@@ -68,13 +69,12 @@ export default function Profile({handleLogin}: Readonly<ProfileProps>) {
                     bio: "",
                     picture: ""
                 })
-                localStorage.clear();
                 setUserExists(false);
             })
             .catch(error => Logger.log("Error deleting user: ", error))
     }
 
-    const logout = () => {
+    function logout() {
         axios.get("/api/users/logout")
             .then(() => {
                 Logger.log("Logout successful");
@@ -84,7 +84,7 @@ export default function Profile({handleLogin}: Readonly<ProfileProps>) {
             .catch((error) => {
                 Logger.error("Logout failed:", error);
             });
-    };
+    }
 
     useEffect(() => {
         fetchUserData();
