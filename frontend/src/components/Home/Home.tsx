@@ -9,10 +9,9 @@ import FriendRequests from "../FriendRequests/FriendRequests.tsx";
 import {Logger} from "../../Logger/Logger.tsx";
 
 type HomeProps = {
-    setCurrentUserId: (id: string) => void;
     handleLogin: () => void;
 }
-export default function Home({setCurrentUserId, handleLogin}: Readonly<HomeProps>) {
+export default function Home({handleLogin}: Readonly<HomeProps>) {
 
     const [userData, setUserData] = useState<User>({
         id: "",
@@ -28,7 +27,7 @@ export default function Home({setCurrentUserId, handleLogin}: Readonly<HomeProps
             .then(response => {
                 response.data.newUser = false;
                 setUserData(response.data)
-                setCurrentUserId(response.data.id);
+                localStorage.setItem("currentUserId", response.data.id)
                 Logger.log("User data loaded:", response.data);
             })
             .catch((error) => {

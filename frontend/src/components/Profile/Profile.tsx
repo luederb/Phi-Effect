@@ -7,14 +7,12 @@ import {useNavigate} from "react-router-dom";
 
 
 type ProfileProps = {
-    currentUserId: string;
-    setCurrentUserId: (id: string) => void;
     handleLogin: () => void;
 }
-export default function Profile({currentUserId, setCurrentUserId, handleLogin}: Readonly<ProfileProps>) {
+export default function Profile({handleLogin}: Readonly<ProfileProps>) {
 
     const navigate = useNavigate();
-
+    const currentUserId = localStorage.getItem("currentUserId");
     function navigateToHomepage() {
         navigate("/");
     }
@@ -61,17 +59,17 @@ export default function Profile({currentUserId, setCurrentUserId, handleLogin}: 
                     bio: "",
                     picture: ""
                 })
-                setCurrentUserId("");
+                localStorage.clear();
                 setUserExists(false);
             })
             .catch(error => Logger.log("Error deleting user: ", error))
     }
 
-    const handleLogout = () => {
+    const logout = () => {
         axios.get("/api/users/logout")
             .then(() => {
                 Logger.log("Logout successful");
-                setCurrentUserId("");
+                localStorage.clear();
                 navigateToHomepage();
             })
             .catch((error) => {
@@ -144,7 +142,7 @@ export default function Profile({currentUserId, setCurrentUserId, handleLogin}: 
                     </div>
                 </div>
                 <div className="profile-buttons">
-                    <button onClick={handleLogout}>Logout</button>
+                    <button onClick={logout}>Logout</button>
                     <button onClick={deleteUserData}>Delete Profile</button>
                 </div>
             </div>

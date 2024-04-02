@@ -5,10 +5,7 @@ import {User} from "../../Types/User.ts";
 import React, {useEffect, useState} from "react";
 import axios from "axios";
 
-type UserProps = {
-    setCurrentUserId: (id: string) => void;
-}
-export default function CompleteProfile({setCurrentUserId}: Readonly<UserProps>) {
+export default function CompleteProfile() {
 
     const navigate = useNavigate();
     function navigateToHomepage() {
@@ -33,7 +30,7 @@ export default function CompleteProfile({setCurrentUserId}: Readonly<UserProps>)
             .then(response => {
                 response.data.newUser = false;
                 setGoogleUserData(response.data);
-                setCurrentUserId(response.data.id);
+                localStorage.setItem("currentUserId", response.data.id)
                 Logger.log("User data loaded:", response.data);
             })
             .catch((error) =>
