@@ -1,5 +1,5 @@
 import "./Header.css";
-import Icons from "../Icons/Icons";
+import Icons from "../assets/Icons/Icons.tsx";
 import {Link} from "react-router-dom";
 
 export default function Header() {
