@@ -27,8 +27,10 @@ export default function Projects() {
 
     return (
         <div className="projects-container">
-            <h2>Projects</h2>
-            <ul>
+            <div className="projects-h2-container">
+                <h2>Projects</h2>
+            </div>
+            <ul className="project-card-list">
                 {projects.map((project) => {
                         return (
                             <li key={project.id}>
@@ -38,7 +40,9 @@ export default function Projects() {
                     }
                 )}
             </ul>
-            <Link to="/projects/create" className="link-as-button">Create new project</Link>
+            <div className="projects-link-container">
+                <Link to="/projects/create" className="link-as-button">Create new project</Link>
+            </div>
         </div>
     )
 }

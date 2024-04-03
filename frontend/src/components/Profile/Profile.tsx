@@ -123,7 +123,6 @@ export default function Profile({handleLogin}: Readonly<ProfileProps>) {
     }
     return (
         <div>
-
             <div className="profile">
                 <div className="name-and-avatar">
                     <h2>{user.name}</h2>
