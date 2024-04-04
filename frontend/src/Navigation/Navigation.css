@@ -1,14 +1,3 @@
-nav {
-    grid-area: nav;
-    min-width: 329px;
-    display: flex;
-    justify-content: space-around;
-    background-color: var(--standardBackgroundColor);
-    color: var(--standardFondColor);
-    border-radius: 0 0 5px 5px;
-    gap: 1px;
-}
-
 nav a {
     width: 100%;
     height: 50px;
