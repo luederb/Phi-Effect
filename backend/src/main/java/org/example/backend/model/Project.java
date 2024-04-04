@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -18,6 +20,6 @@ public class Project {
     private String genre;
     private String status;
     private GpsCoordinates gpsCoordinates;
-    private String projectStart;
-    private String projectEnd;
+    private Date projectStart;
+    private Date projectEnd;
 }
