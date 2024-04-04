@@ -1,43 +1,49 @@
 package org.example.backend.repository;
 
 import org.example.backend.model.Project;
+import org.example.backend.service.ProjectService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
-import static com.mongodb.internal.connection.tlschannel.util.Util.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.when;
 
-@DataJpaTest
+@SpringBootTest
 class ProjectRepositoryTest {
 
-    @Autowired
-    private TestEntityManager entityManager;
-
-    @Autowired
+    @Mock
     private ProjectRepository projectRepository;
 
+    @InjectMocks
+    private ProjectService projectService;
+
     @Test
-    @DisplayName("Should find all projects")
-    void shouldFindAllProjects() {
-        Project project = new Project();
-        entityManager.persistAndFlush(project);
+    @DisplayName("Test findAll")
+    void testFindAll() {
+        when(projectRepository.findAll()).thenReturn(Arrays.asList(new Project(), new Project()));
 
-        List<Project> projects = projectRepository.findAll();
+        List<Project> projects = projectService.getAllProjects();
 
-        assertEquals(1, projects.size());
+        assertEquals(2, projects.size());
     }
 
     @Test
-    @DisplayName("Should return empty list when there are no projects")
-    void shouldReturnEmptyListWhenNoProjects() {
+    @DisplayName("Test findById")
+    void testFindById() {
+        Project mockProject = new Project();
+        mockProject.setId("1");
+        when(projectRepository.findById("1")).thenReturn(Optional.of(mockProject));
 
-        List<Project> projects = projectRepository.findAll();
+        Project project = projectService.getProjectById("1");
 
-        assertTrue(projects.isEmpty());
+        assertEquals("1", project.getId());
     }
+
 }

@@ -3,20 +3,17 @@ package org.example.backend.service;
 import org.example.backend.model.Project;
 import org.example.backend.repository.ProjectRepository;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.Collections;
-import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-@ExtendWith(MockitoExtension.class)
+@SpringBootTest
 class ProjectServiceTest {
 
     @Mock
@@ -28,24 +25,25 @@ class ProjectServiceTest {
     void setUp() {
         projectService = new ProjectService(projectRepository);
     }
-
     @Test
-    @DisplayName("Should return all projects")
-    void shouldReturnAllProjects() {
-        when(projectRepository.findAll()).thenReturn(Collections.singletonList(new Project()));
+    void getProjectTest() {
+        Project mockProject = new Project();
+        mockProject.setId("1");
+        when(projectRepository.findById("1")).thenReturn(Optional.of(mockProject));
 
-        List<Project> projects = projectService.getAllProjects();
+        Project project = projectService.getProjectById("1");
 
-        assertEquals(1, projects.size());
+        assertEquals("1", project.getId());
     }
 
     @Test
-    @DisplayName("Should return empty list when there are no projects")
-    void shouldReturnEmptyListWhenNoProjects() {
-        when(projectRepository.findAll()).thenReturn(Collections.emptyList());
+    void saveProjectTest() {
+        Project mockProject = new Project();
+        mockProject.setId("1");
+        when(projectRepository.save(any(Project.class))).thenReturn(mockProject);
 
-        List<Project> projects = projectService.getAllProjects();
+        Project savedProject = projectService.saveNewProject(new Project());
 
-        assertTrue(projects.isEmpty());
+        assertEquals("1", savedProject.getId());
     }
 }

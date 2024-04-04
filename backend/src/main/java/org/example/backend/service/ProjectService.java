@@ -12,16 +12,18 @@ import java.util.List;
 public class ProjectService {
 
     private final ProjectRepository projectRepository;
+
     public List<Project> getAllProjects() {
         return projectRepository.findAll();
     }
 
     public Project saveNewProject(Project project) {
-        projectRepository.save(project);
-        return projectRepository.findById(project.getId()).orElseThrow();
+        return projectRepository.save(project);
     }
 
     public Project getProjectById(String id) {
-        return projectRepository.findById(id).orElseThrow();
+        return projectRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Project not found"));
     }
+
 }

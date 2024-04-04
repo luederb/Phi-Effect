@@ -1,20 +1,18 @@
 package org.example.backend.controller;
 
+import org.example.backend.model.GpsCoordinates;
 import org.example.backend.model.Project;
 import org.example.backend.service.ProjectService;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-
-import java.util.Collections;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -28,21 +26,21 @@ class ProjectControllerTest {
     private ProjectService projectService;
 
     @Test
-    @DisplayName("Should return 200 when getting all projects")
-    void shouldReturn200WhenGetAllProjects() throws Exception {
-        when(projectService.getAllProjects()).thenReturn(Collections.singletonList(new Project()));
+    void getProjectByIdTest() throws Exception {
+        Project project = new Project();
+        project.setId("1");
+        project.setName("Test Project");
+        project.setProjectOwner("John Doe");
+        project.setCity("New York");
+        project.setDescription("This is a test project");
+        project.setGenre("Software Development");
+        project.setStatus("In Progress");
+        project.setGpsCoordinates(new GpsCoordinates(40.7128, 74.0060));
+        project.setProjectStart("2021-01-01");
+        project.setProjectEnd("2021-12-31");
 
-        mockMvc.perform(get("/projects"))
-                .andExpect(status().isOk());
-    }
+        when(projectService.getProjectById("1")).thenReturn(project);
 
-    @Test
-    @DisplayName("Should return 200 and empty list when there are no projects")
-    void shouldReturn200AndEmptyListWhenNoProjects() throws Exception {
-        when(projectService.getAllProjects()).thenReturn(Collections.emptyList());
-
-        mockMvc.perform(get("/projects"))
-                .andExpect(status().isOk())
-                .andExpect(content().json("[]"));
+        mockMvc.perform(get("/api/projects/1").contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
     }
 }
