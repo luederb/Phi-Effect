@@ -2,8 +2,12 @@ import "./CreateNewProject.css";
 import {useState} from "react";
 import axios from "axios";
 import {Logger} from "../../../Logger/Logger.tsx";
+import {useNavigate} from "react-router-dom";
 
 export default function CreateNewProject() {
+
+    const navigate = useNavigate();
+
     const [newProject, setNewProject] = useState({
         name: "",
         projectOwner: "Lüder Budde",
@@ -44,6 +48,7 @@ export default function CreateNewProject() {
         axios.post("/api/projects", newProject)
             .then(response => {
                 Logger.log("Project created: ", response.data);
+                navigate("/projects");
             })
             .catch(error => {
                 Logger.error("Error creating project: ", error);
