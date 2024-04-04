@@ -13,6 +13,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
@@ -74,8 +76,15 @@ class ProjectControllerTest {
         project.setGenre("Software Development");
         project.setStatus("In Progress");
         project.setGpsCoordinates(new GpsCoordinates(40.7128, 74.0060));
-        project.setProjectStart("2021-01-01");
-        project.setProjectEnd("2021-12-31");
+        Calendar calendar = Calendar.getInstance();
+
+        calendar.set(2024, Calendar.JANUARY, 1);
+        Date startDate = calendar.getTime();
+        project.setProjectStart(startDate);
+
+        calendar.set(2024, Calendar.DECEMBER, 31);
+        Date endDate = calendar.getTime();
+        project.setProjectEnd(endDate);
 
         when(projectService.getProjectById("1")).thenReturn(project);
 
