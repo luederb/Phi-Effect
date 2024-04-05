@@ -72,6 +72,11 @@ export default function EditProjectPage() {
     }
 
     function updateProject() {
+        Logger.log("Updating project: ", project)
+        if (project.name === "") {
+            alert("Please provide a project name");
+            return;
+        }
         axios.put(`/api/projects/${id}`, project)
             .then(response => {
                 Logger.log("Updated project: ", response.data);

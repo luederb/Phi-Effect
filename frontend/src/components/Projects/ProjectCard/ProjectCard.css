@@ -1,24 +1,14 @@
-.transition-expand {
-    transition: max-height 1.5s ease-out;
-}
-
-.transition-collapse {
-    transition: max-height 1.5s ease-in;
-}
-
-.hide {
-    max-height: 0;
+.project-card-content {
+    max-height: 9rem;
     overflow: hidden;
-    visibility: hidden;
-    position: absolute;
+    transition: max-height 1s ease-in-out;
 }
 
-.show {
+.project-card-content.show {
     max-height: 1000px;
-    overflow: hidden;
-    visibility: visible;
-    position: relative;
+
 }
+
 .project-card {
     all: unset;
     display: flex;
@@ -29,7 +19,6 @@
     border-radius: 0.5rem;
     background-color: var(--highlightColor);
     box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.3);
-    transition: transform 0.2s, box-shadow 0.2s;
 
     &:hover {
         transform: translateY(-0.1rem);

@@ -10,9 +10,14 @@ export default function Projects() {
     const [projects, setProjects] = useState<Project[]>([]);
     const [expandedProjectId, setExpandedProjectId] = useState<string | null>(null);
 
-    const handleProjectClick = (id: string) => {
-        setExpandedProjectId(prevId => prevId === id ? null : id);
-    };
+    function handleProjectClick(id: string) {
+        if (expandedProjectId === id) {
+            setExpandedProjectId(null);
+        } else {
+            setExpandedProjectId(id);
+        }
+    }
+
     function fetchAllProjects() {
         axios.get("/api/projects")
             .then(response => {

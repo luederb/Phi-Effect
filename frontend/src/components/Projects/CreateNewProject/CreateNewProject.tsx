@@ -1,16 +1,18 @@
 import "./CreateNewProject.css";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import axios from "axios";
 import {Logger} from "../../../Logger/Logger.tsx";
 import {useNavigate} from "react-router-dom";
 
 export default function CreateNewProject() {
-
+    const currentUserId = localStorage.getItem("currentUserId");
+    const [isLoading, setIsLoading] = useState(true);
+    const [userIsLoggedIn, setUserIsLoggedIn] = useState(false);
     const navigate = useNavigate();
 
     const [newProject, setNewProject] = useState({
         name: "",
-        projectOwner: "Lüder Budde",
+        projectOwner: "",
         city: "",
         description: "",
         genre: "",
@@ -19,6 +21,20 @@ export default function CreateNewProject() {
         projectStart: new Date(),
         projectEnd: new Date(),
     });
+
+    function fetchUserData() {
+        setIsLoading(true);
+        axios.get(`/api/users/${currentUserId}`)
+            .then(response => {
+                Logger.log("User: ", response.data);
+                setUserIsLoggedIn(true);
+                setNewProject({...newProject, projectOwner: response.data.name})
+            })
+            .catch(error => {
+                Logger.log("Error fetching user data: ", error);
+            })
+            .finally(() => setIsLoading(false))
+    }
 
     function handleInputChange(event: React.ChangeEvent<HTMLInputElement>) {
         if (event.target.name === "latitude" || event.target.name === "longitude") {
@@ -45,6 +61,10 @@ export default function CreateNewProject() {
     }
 
     function createProject() {
+        if (!newProject.name || newProject.name === "") {
+            alert("Please provide a project name");
+            return;
+        }
         axios.post("/api/projects", newProject)
             .then(response => {
                 Logger.log("Project created: ", response.data);
@@ -55,6 +75,22 @@ export default function CreateNewProject() {
             })
     }
 
+    useEffect(() => {
+        fetchUserData();
+        // eslint-disable-next-line
+    }, []);
+
+    if (isLoading) {
+        return (
+            <div>
+                <h1>Loading...</h1>
+            </div>
+        )
+    }
+
+    if (!userIsLoggedIn) {
+        return <p>Please login, to create a new Project</p>
+    }
     return (
         <div className="create-new-project-container">
             <h2>Create New Project</h2>
@@ -110,7 +146,7 @@ export default function CreateNewProject() {
                            onChange={handleInputChange}/>
                 </div>
             </form>
-            <button onClick={createProject}>Create Project</button>
+                <button onClick={createProject}>Create Project</button>
         </div>
     )
 }
