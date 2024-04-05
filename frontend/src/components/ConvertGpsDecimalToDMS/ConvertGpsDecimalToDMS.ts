@@ -5,7 +5,7 @@ export default function ConvertGpsDecimalToDMS(decimal: number, isLongitude: boo
     const minutes = Math.floor(minutesNotTruncated);
     const seconds = ((minutesNotTruncated - minutes) * 60).toFixed(1);
 
-    let direction = '';
+    let direction: string;
     if (isLongitude) {
         direction = decimal >= 0 ? 'E' : 'W';
     } else {
