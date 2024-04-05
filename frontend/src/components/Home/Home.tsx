@@ -59,7 +59,7 @@ export default function Home({handleLogin}: Readonly<HomeProps>) {
         <div className="home-container">
             {userData.name ?
                 <>
-                    <h2>Welcome, Lüder</h2>
+                    <h2>Welcome, {userData.firstName}</h2>
                     <ProjectsOverviewTable/>
                     <FriendRequests/>
                 </>

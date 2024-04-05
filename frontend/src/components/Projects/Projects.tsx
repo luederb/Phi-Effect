@@ -8,7 +8,11 @@ import ProjectCard from "./ProjectCard/ProjectCard.tsx";
 
 export default function Projects() {
     const [projects, setProjects] = useState<Project[]>([]);
+    const [expandedProjectId, setExpandedProjectId] = useState<string | null>(null);
 
+    const handleProjectClick = (id: string) => {
+        setExpandedProjectId(prevId => prevId === id ? null : id);
+    };
     function fetchAllProjects() {
         axios.get("/api/projects")
             .then(response => {
@@ -31,13 +35,13 @@ export default function Projects() {
                 <h2>Projects</h2>
             </div>
             <ul className="project-card-list">
-                {projects.map((project) => {
-                        return (
-                            <li key={project.id}>
-                                <ProjectCard project={project}/>
-                            </li>
-                        )
-                    }
+                {projects.map((project) => (
+                    <ProjectCard
+                        key={project.id}
+                        project={project}
+                        isExpanded={project.id === expandedProjectId}
+                        onProjectClick={handleProjectClick}
+                    />)
                 )}
             </ul>
             <div className="projects-link-container">

@@ -17,7 +17,7 @@ public class ProjectService {
         return projectRepository.findAll();
     }
 
-    public Project saveNewProject(Project project) {
+    public Project saveProject(Project project) {
         return projectRepository.save(project);
     }
 
@@ -25,5 +25,4 @@ public class ProjectService {
         return projectRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Project not found"));
     }
-
 }

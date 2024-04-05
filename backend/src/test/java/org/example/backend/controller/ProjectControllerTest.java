@@ -53,7 +53,7 @@ class ProjectControllerTest {
     void saveNewProjectTest() throws Exception {
         Project mockProject = new Project();
         mockProject.setId("1");
-        when(projectService.saveNewProject(any(Project.class))).thenReturn(mockProject);
+        when(projectService.saveProject(any(Project.class))).thenReturn(mockProject);
 
         Project newProject = new Project();
         ObjectMapper mapper = new ObjectMapper();

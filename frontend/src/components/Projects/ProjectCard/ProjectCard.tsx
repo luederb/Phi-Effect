@@ -1,50 +1,84 @@
 import "./ProjectCard.css";
 import {Project} from "../../../Types/Project.ts";
+import Icons from "../../../assets/Icons/Icons.tsx";
+import {Link} from "react-router-dom";
+import ConvertGpsDecimalToDMS from "../../ConvertGpsDecimalToDMS/ConvertGpsDecimalToDMS.ts";
 
 type ProjectProps = {
     project: Project;
+    isExpanded: boolean;
+    onProjectClick: (id: string) => void;
 }
-export default function ProjectCard({project}: Readonly<ProjectProps>) {
+export default function ProjectCard({project, isExpanded, onProjectClick}: Readonly<ProjectProps>) {
 
     return (
-        <div className="project-card">
-            <h3>{project.name}</h3>
-            <div className="project-card-line">
-                <p>Project Owner: </p>
-                <p>{project.projectOwner}</p>
+        <button className="project-card" onClick={() => onProjectClick(project.id)}>
+
+            <div
+                className={`project-card-minimal-information ${isExpanded ? "transition-collapse" : "transition-expand"} ${isExpanded ? "hide" : "show"}`}>
+                <div className="project-name-and-edit-icon">
+                    <h3>{project.name}</h3>
+                    <Link to={`/edit/${project.id}`}>
+                        <Icons variant="edit" backgroundColor="var(--standardFondColor)"
+                               strokeColor="var(--standardFondColor)" strokeWidth={3} size={25}/>
+                    </Link>
+                </div>
+                <div className="project-card-line">
+                    <p>City: </p>
+                    <p>{project.city}</p>
+                </div>
+                <div className="project-card-line">
+                    <p>Genre: </p>
+                    <p>{project.genre}</p>
+                </div>
+                <div className="project-card-line">
+                    <p>Project Start: </p>
+                    <p>{new Date(project.projectStart).toLocaleDateString()}</p>
+                </div>
             </div>
-            <div className="project-card-line">
-                <p>City: </p>
-                <p>{project.city}</p>
+
+            <div
+                className={`project-card-detailed-information ${isExpanded ? "transition-expand" : "transition-collapse"} ${isExpanded ? "show" : "hide"}`}>
+                <div className="project-name-and-edit-icon">
+                    <h3>{project.name}</h3>
+                    <Link to={`/edit/${project.id}`}>
+                        <Icons variant="edit" backgroundColor="var(--standardFondColor)"
+                               strokeColor="var(--standardFondColor)" strokeWidth={3} size={25}/>
+                    </Link>
+                </div>
+                <div className="project-card-line">
+                    <p>Project Owner: </p>
+                    <p>{project.projectOwner}</p>
+                </div>
+                <div className="project-card-line">
+                    <p>City: </p>
+                    <p>{project.city}</p>
+                </div>
+                <div className="project-card-line">
+                    <p>Description: </p>
+                    <p>{project.description}</p>
+                </div>
+                <div className="project-card-line">
+                    <p>Genre: </p>
+                    <p>{project.genre}</p>
+                </div>
+                <div className="project-card-line">
+                    <p>Status: </p>
+                    <p>{project.status}</p>
+                </div>
+                <div className="project-card-line">
+                    <p>Location: </p>
+                    <p>{ConvertGpsDecimalToDMS(project.gpsCoordinates.latitude, false)} {ConvertGpsDecimalToDMS(project.gpsCoordinates.longitude, true)}</p>
+                </div>
+                <div className="project-card-line">
+                    <p>Project Start: </p>
+                    <p>{new Date(project.projectStart).toLocaleDateString()}</p>
+                </div>
+                <div className="project-card-line">
+                    <p>Project End: </p>
+                    <p>{new Date(project.projectEnd).toLocaleDateString()}</p>
+                </div>
             </div>
-            <div className="project-card-line">
-                <p>Description: </p>
-                <p>{project.description}</p>
-            </div>
-            <div className="project-card-line">
-                <p>Genre: </p>
-                <p>{project.genre}</p>
-            </div>
-            <div className="project-card-line">
-                <p>Status: </p>
-                <p>{project.status}</p>
-            </div>
-            <div className="project-card-line">
-                <p>Latitude: </p>
-                <p>{project.gpsCoordinates.latitude}</p>
-            </div>
-            <div className="project-card-line">
-                <p>Longitude: </p>
-                <p>{project.gpsCoordinates.longitude}</p>
-            </div>
-            <div className="project-card-line">
-                <p>Project Start: </p>
-                <p>{new Date(project.projectStart).toLocaleDateString()}</p>
-            </div>
-            <div className="project-card-line">
-                <p>Project End: </p>
-                <p>{new Date(project.projectEnd).toLocaleDateString()}</p>
-            </div>
-        </div>
+        </button>
     )
 }

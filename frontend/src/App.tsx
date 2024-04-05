@@ -8,6 +8,7 @@ import CompleteProfile from "./components/Profile/CompleteProfile/CompleteProfil
 import Profile from "./components/Profile/Profile.tsx";
 import {Logger} from "./Logger/Logger.tsx";
 import CreateNewProject from "./components/Projects/CreateNewProject/CreateNewProject.tsx";
+import ProjectDetailsPage from "./components/Projects/EditProjectPage/EditProjectPage.tsx";
 
 export default function App() {
 
@@ -25,6 +26,7 @@ export default function App() {
                 <Route path="/profile" element={<Profile handleLogin={login}/>}/>
                 <Route path="/projects" element={<Projects/>}/>
                 <Route path="/projects/create" element={<CreateNewProject/>}/>
+                <Route path="/projects/edit/:id" element={<ProjectDetailsPage/>}/>
                 <Route path="/competitions" element={<Competitions/>}/>
                 <Route path="/network" element={<Network/>}/>
             </Routes>
