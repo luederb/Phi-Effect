@@ -37,14 +37,13 @@ public class UserController {
     public void deleteUserById(@PathVariable String id){
         service.deleteUserById(id);
     }
-    @PutMapping("/{userId}/addFavoriteProject/{projectId}")
-    public User addFavoriteProject(@PathVariable String userId, @PathVariable String projectId) {
+    @PutMapping("/{userId}/updateFavoriteProjectsOfUser/{projectId}")
+    public User updateUserById(@PathVariable String userId, @PathVariable String projectId) {
         User user = service.getUserById(userId);
-        return service.addFavoriteProject(user, projectId);
-    }
-    @PutMapping("/{userId}/removeFavoriteProject/{projectId}")
-    public User removeFavoriteProject(@PathVariable String userId, @PathVariable String projectId) {
-        User user = service.getUserById(userId);
-        return service.removeFavoriteProject(user, projectId);
+        if(user.getFavoriteProjects().contains(projectId)) {
+            return service.removeFavoriteProject(user, projectId);
+        } else {
+            return service.addFavoriteProject(user, projectId);
+        }
     }
 }

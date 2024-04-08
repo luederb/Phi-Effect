@@ -120,7 +120,25 @@ a:hover {
     cursor: pointer;
 }
 
-button, .link-as-button {
+button {
+    margin: 0;
+    padding: 0;
+    text-align: center;
+    text-decoration: none;
+    border: none;
+    border-radius: 0;
+    background-color: var(--highlightColor);
+    color: var(--standardFondColor);
+    &:hover {
+        cursor: pointer;
+        background-color: var(--highlightColor);
+    }
+    &:active {
+        background-color: var(--highlightColor);
+    }
+}
+
+.classic-button, .link-as-button {
     padding: 10px;
     margin: 5px;
     display: inline-block;

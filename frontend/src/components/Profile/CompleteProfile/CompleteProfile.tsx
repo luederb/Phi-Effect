@@ -95,7 +95,7 @@ export default function CompleteProfile() {
                               value={googleUserData.bio} onChange={onProfilDataInputChange}/>
                 </div>
             </form>
-            <button className="submit-button" onClick={updateUserData}>Submit</button>
+            <button className="classic-button submit-button" onClick={updateUserData}>Submit</button>
         </div>
     )
 }

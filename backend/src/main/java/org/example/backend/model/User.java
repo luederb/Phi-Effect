@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -46,6 +45,5 @@ public class User {
         this.bio = "";
         this.picture = getStringAttribute(attributes, "picture");
         this.isNewUser = true;
-        this.favoriteProjects = new ArrayList<>();
     }
 }

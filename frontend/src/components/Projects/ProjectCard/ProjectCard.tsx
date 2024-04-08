@@ -4,39 +4,22 @@ import Icons from "../../../assets/Icons/Icons.tsx";
 import {Link} from "react-router-dom";
 import ConvertGpsDecimalToDMS from "../../ConvertGpsDecimalToDMS/ConvertGpsDecimalToDMS.ts";
 import {useEffect, useRef} from "react";
-import axios from "axios";
-import {Logger} from "../../../Logger/Logger.tsx";
 
 type ProjectProps = {
     project: Project;
     isExpanded: boolean;
+    isFavorite: boolean;
     onProjectClick: (id: string) => void;
-    favoriteProjects: string[];
-    handleFetchFavoriteProjectsForCurrentUser: () => void;
+    handleUpdateFavoriteProjectsForCurrentUser: (projectId: string) => void;
 }
-export default function ProjectCard({project, isExpanded, onProjectClick, favoriteProjects, handleFetchFavoriteProjectsForCurrentUser}: Readonly<ProjectProps>) {
+export default function ProjectCard({
+                                        project,
+                                        isExpanded,
+                                        isFavorite,
+                                        onProjectClick,
+                                        handleUpdateFavoriteProjectsForCurrentUser
+                                    }: Readonly<ProjectProps>) {
     const cardRef = useRef<HTMLButtonElement>(null);
-    const currentUserId = localStorage.getItem("currentUserId");
-
-    function addProjectToFavorites() {
-        axios.put(`/api/users/${currentUserId}/addFavoriteProject/${project.id}`)
-            .then(response => {
-                Logger.log("Response: ", response.data);
-                handleUpdateFavoriteProjectsForCurrentUser();
-                handleFetchFavoriteProjectsForCurrentUser();
-            })
-            .catch(error => Logger.log("Error fetching data: ", error))
-    }
-
-    function removeProjectFromFavorites() {
-        axios.delete(`api/users/${currentUserId}/removeFavoriteProject/${project.id}`)
-            .then(response => {
-                Logger.log("Response: ", response.data);
-                handleUpdateFavoriteProjectsForCurrentUser();
-                handleFetchFavoriteProjectsForCurrentUser();
-            })
-            .catch(error => Logger.log("Error fetching data: ", error))
-    }
 
     useEffect(() => {
         if (isExpanded && cardRef.current) {
@@ -49,19 +32,17 @@ export default function ProjectCard({project, isExpanded, onProjectClick, favori
             <div
                 className={`project-card-content ${isExpanded ? "show" : ""}`}>
                 <div className="project-name-and-edit-icon">
-
-                    {favoriteProjects?.includes(project.id) ?
-                        <button className="favorite-button" onClick={removeProjectFromFavorites}>
+                    <button className="favorite-button"
+                            onClick={() => handleUpdateFavoriteProjectsForCurrentUser(project.id)}>
+                        {isFavorite ?
                             <Icons variant="favoriteFilled" backgroundColor="var(--standardFondColor)"
                                    strokeColor="var(--standardFondColor)" strokeWidth={1} size={25}/>
-                        </button>
-                        :
-                        <button className="favorite-button" onClick={addProjectToFavorites}>
+                            :
                             <Icons variant="favorite" backgroundColor="var(--standardFondColor)"
                                    strokeColor="var(--standardFondColor)" strokeWidth={1} size={25}/>
-                        </button>
-                    }
-                    <button onClick={() => onProjectClick(project.id)}>
+                        }
+                    </button>
+                    <button className="project-title-button" onClick={() => onProjectClick(project.id)}>
                         <h3>{project.name}</h3>
                     </button>
                     <Link to={`/projects/edit/${project.id}`}>

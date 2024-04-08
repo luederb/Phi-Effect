@@ -149,8 +149,8 @@ export default function EditProjectPage() {
                 </div>
             </form>
             <div>
-                <button className="edit-project-cancel-button" onClick={() => navigate("/projects")}>Cancel</button>
-                <button className="edit-project-update button" onClick={() => updateProject()}>Update</button>
+                <button className="classic-button edit-project-cancel-button" onClick={() => navigate("/projects")}>Cancel</button>
+                <button className="classic-button edit-project-update button" onClick={() => updateProject()}>Update</button>
             </div>
         </div>
     )

@@ -9,7 +9,7 @@ import ProjectCard from "./ProjectCard/ProjectCard.tsx";
 export default function Projects() {
     const [projects, setProjects] = useState<Project[]>([]);
     const [expandedProjectId, setExpandedProjectId] = useState<string | null>(null);
-    const [favoriteProjects, setFavoriteProjects] = useState([]);
+    const [favoriteProjects, setFavoriteProjects] = useState<string[]>([]);
 
     const currentUserId = localStorage.getItem("currentUserId");
 
@@ -33,45 +33,51 @@ export default function Projects() {
     }
 
     function fetchFavoriteProjectsForCurrentUser() {
-        axios.get("/api/users/me", {
-            headers: {
-                "Authorization": `Bearer ${currentUserId}`
-            }
+        axios.get(`/api/users/${currentUserId}`, {
         })
             .then(response => {
                 setFavoriteProjects(response.data.favoriteProjects);
-                Logger.log("Favorite projects of current user:", response.data.favoriteProjects);
+                Logger.log("Favorite projects for current user: ", favoriteProjects);
             })
             .catch((error) =>
                 Logger.error("An error occurred while loading the favorite projects for the current user:", error))
     }
 
-    useEffect(() => {
-        fetchAllProjects();
-        fetchFavoriteProjectsForCurrentUser();
-        // eslint-disable-next-line
-    }, []);
+    function updateFavoriteProjectsForCurrentUser(projectId: string) {
+        axios.put(`/api/users/${currentUserId}/updateFavoriteProjectsOfUser/${projectId}`)
+            .then(response => {
+                setFavoriteProjects(response.data.favoriteProjects);
+                Logger.log("Updated user data: ", response.data);
+            })
+            .catch(error => Logger.log("Error updating user data: ", error));
+    }
 
-    return (
-        <div className="projects-container">
-            <div className="projects-h2-container">
-                <h2>Projects</h2>
-            </div>
-            <ul className="project-card-list">
-                {projects.map((project) => (
-                    <ProjectCard
-                        key={project.id}
-                        project={project}
-                        isExpanded={project.id === expandedProjectId}
-                        onProjectClick={handleProjectClick}
-                        favoriteProjects={favoriteProjects}
-                        handleFetchFavoriteProjectsForCurrentUser={fetchFavoriteProjectsForCurrentUser}
-                    />)
-                )}
-            </ul>
-            <div className="projects-link-container">
-                <Link to="/projects/create" className="link-as-button">Create new project</Link>
-            </div>
+useEffect(() => {
+    fetchAllProjects();
+    fetchFavoriteProjectsForCurrentUser();
+    // eslint-disable-next-line
+}, []);
+
+return (
+    <div className="projects-container">
+        <div className="projects-h2-container">
+            <h2>Projects</h2>
         </div>
-    )
+        <ul className="project-card-list">
+            {projects.map((project) => (
+                <ProjectCard
+                    key={project.id}
+                    project={project}
+                    isExpanded={project.id === expandedProjectId}
+                    onProjectClick={handleProjectClick}
+                    isFavorite={favoriteProjects.includes(project.id)}
+                    handleUpdateFavoriteProjectsForCurrentUser={updateFavoriteProjectsForCurrentUser}
+                />)
+            )}
+        </ul>
+        <div className="projects-link-container">
+            <Link to="/projects/create" className="link-as-button">Create new project</Link>
+        </div>
+    </div>
+)
 }

@@ -10,7 +10,6 @@
 }
 
 .project-card {
-    all: unset;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -19,7 +18,6 @@
     border-radius: 0.5rem;
     background-color: var(--highlightColor);
     box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.3);
-
     &:hover {
         transform: translateY(-0.1rem);
         box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.3) !important;
@@ -33,23 +31,41 @@
     align-items: center;
 }
 .favorite-button {
-    all: unset;
     grid-column: 1;
     display: flex;
     justify-content: center;
     align-items: center;
-
-
 }
-.project-name-and-edit-icon h3 {
+.project-title-button {
     grid-column: 2;
-    margin: 5px;
-    align-self: center;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    padding: 0;
+    margin: 0;
+    background-color: var(--highlightColor);
+    color: var(--standardFondColor);
+    box-shadow: none; !important;
+    &:hover {
+        cursor: pointer;
+        background-color: var(--highlightColor);
+        box-shadow: none; !important;
+    }
+    &:active {
+        background-color: var(--highlightColor);
+        box-shadow: none; !important;
+    }
 }
 .project-name-and-edit-icon a {
     grid-column: 3;
     display: flex;
     align-content: center;
+    &:hover {
+        cursor: pointer;
+        background-color: var(--highlightColor);
+    }
 }
 
 .project-card-line {
