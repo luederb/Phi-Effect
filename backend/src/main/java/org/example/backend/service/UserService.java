@@ -35,8 +35,6 @@ public class UserService {
         }
         existingUser.getFavoriteProjects().add(projectId);
         userRepository.save(existingUser);
-        LOGGER.info("Added project to favorites: {}", projectId);
-        LOGGER.info("Project favorites for user: {}", existingUser.getFavoriteProjects());
         return existingUser;
     }
 
@@ -48,8 +46,6 @@ public class UserService {
         }
         existingUser.getFavoriteProjects().remove(projectId);
         userRepository.save(existingUser);
-        LOGGER.info("Removed project from favorites: {}", projectId);
-        LOGGER.info("Project favorites for user: {}", existingUser.getFavoriteProjects());
         return existingUser;
     }
 }
