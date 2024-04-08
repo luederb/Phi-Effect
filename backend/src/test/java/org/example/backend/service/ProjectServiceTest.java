@@ -50,7 +50,7 @@ class ProjectServiceTest {
         when(projectRepository.save(any(Project.class))).thenReturn(mockProject);
 
         Project newProject = new Project();
-        Project savedProject = projectService.saveNewProject(newProject);
+        Project savedProject = projectService.saveProject(newProject);
 
         assertEquals("1", savedProject.getId());
     }

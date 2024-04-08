@@ -31,7 +31,14 @@ public class ProjectController {
 
     @PostMapping
     public Project saveNewProject(@RequestBody Project project) {
-        return projectService.saveNewProject(project);
+        return projectService.saveProject(project);
     }
 
+    @PutMapping("{id}")
+    public Project updateProjectById(@PathVariable String id, @RequestBody Project project) {
+        if (!project.getId().equals(id)) {
+            throw new IllegalArgumentException("The id in the url does not match the request body's id");
+        }
+        return projectService.saveProject(project);
+    }
 }
