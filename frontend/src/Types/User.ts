@@ -7,4 +7,5 @@ export type User = {
     phone?: number;
     bio?: string;
     picture: string;
+    favoriteProjects?: string[];
 }

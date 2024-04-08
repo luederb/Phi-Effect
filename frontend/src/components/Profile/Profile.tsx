@@ -67,7 +67,7 @@ export default function Profile({handleLogin}: Readonly<ProfileProps>) {
                     email: "",
                     phone: 0,
                     bio: "",
-                    picture: ""
+                    picture: "",
                 })
                 setUserExists(false);
             })

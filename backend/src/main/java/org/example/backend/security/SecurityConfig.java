@@ -41,6 +41,7 @@ public class SecurityConfig {
                         ))
                 .authorizeHttpRequests(a -> a
                         .requestMatchers(HttpMethod.GET, "/api/users/me").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/users/me/{currentUserId}").authenticated()
                         .anyRequest().permitAll());
 
         return http.build();

@@ -32,6 +32,15 @@
     justify-items: center;
     align-items: center;
 }
+.favorite-button {
+    all: unset;
+    grid-column: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+
+}
 .project-name-and-edit-icon h3 {
     grid-column: 2;
     margin: 5px;

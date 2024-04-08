@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import static org.example.backend.util.AttributeUtils.getStringAttribute;
@@ -26,6 +28,7 @@ public class User {
     private String bio;
     private String picture;
     private boolean isNewUser;
+    private List<String> favoriteProjects;
 
     public User(Map<String, Object> attributes) {
         LOGGER.info("Creating User with attributes: {}", attributes);
@@ -43,5 +46,6 @@ public class User {
         this.bio = "";
         this.picture = getStringAttribute(attributes, "picture");
         this.isNewUser = true;
+        this.favoriteProjects = new ArrayList<>();
     }
 }
