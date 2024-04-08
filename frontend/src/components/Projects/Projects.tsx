@@ -9,6 +9,9 @@ import ProjectCard from "./ProjectCard/ProjectCard.tsx";
 export default function Projects() {
     const [projects, setProjects] = useState<Project[]>([]);
     const [expandedProjectId, setExpandedProjectId] = useState<string | null>(null);
+    const [favoriteProjects, setFavoriteProjects] = useState([]);
+
+    const currentUserId = localStorage.getItem("currentUserId");
 
     function handleProjectClick(id: string) {
         if (expandedProjectId === id) {
@@ -29,8 +32,23 @@ export default function Projects() {
             })
     }
 
+    function fetchFavoriteProjectsForCurrentUser() {
+        axios.get("/api/users/me", {
+            headers: {
+                "Authorization": `Bearer ${currentUserId}`
+            }
+        })
+            .then(response => {
+                setFavoriteProjects(response.data.favoriteProjects);
+                Logger.log("Favorite projects of current user:", response.data.favoriteProjects);
+            })
+            .catch((error) =>
+                Logger.error("An error occurred while loading the favorite projects for the current user:", error))
+    }
+
     useEffect(() => {
         fetchAllProjects();
+        fetchFavoriteProjectsForCurrentUser();
         // eslint-disable-next-line
     }, []);
 
@@ -46,6 +64,8 @@ export default function Projects() {
                         project={project}
                         isExpanded={project.id === expandedProjectId}
                         onProjectClick={handleProjectClick}
+                        favoriteProjects={favoriteProjects}
+                        handleFetchFavoriteProjectsForCurrentUser={fetchFavoriteProjectsForCurrentUser}
                     />)
                 )}
             </ul>

@@ -29,17 +29,27 @@ public class UserService {
 
     public User addFavoriteProject(User user, String projectId) {
         User existingUser = userRepository.findById(user.getId()).orElseThrow(() -> new RuntimeException("User not found"));
+        if(existingUser.getFavoriteProjects().contains(projectId)) {
+            LOGGER.info("Project already in favorites: {}", projectId);
+            return existingUser;
+        }
         existingUser.getFavoriteProjects().add(projectId);
         userRepository.save(existingUser);
-        LOGGER.info("Added project to favorites: {}", existingUser.getFavoriteProjects());
+        LOGGER.info("Added project to favorites: {}", projectId);
+        LOGGER.info("Project favorites for user: {}", existingUser.getFavoriteProjects());
         return existingUser;
     }
 
     public User removeFavoriteProject(User user, String projectId) {
         User existingUser = userRepository.findById(user.getId()).orElseThrow(() -> new RuntimeException("User not found"));
+        if(!existingUser.getFavoriteProjects().contains(projectId)) {
+            LOGGER.info("Project not in favorites: {}", projectId);
+            return existingUser;
+        }
         existingUser.getFavoriteProjects().remove(projectId);
         userRepository.save(existingUser);
-        LOGGER.info("Removed project from favorites: {}", existingUser.getFavoriteProjects());
+        LOGGER.info("Removed project from favorites: {}", projectId);
+        LOGGER.info("Project favorites for user: {}", existingUser.getFavoriteProjects());
         return existingUser;
     }
 }
