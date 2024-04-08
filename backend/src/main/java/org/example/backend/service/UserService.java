@@ -3,14 +3,13 @@ package org.example.backend.service;
 import lombok.RequiredArgsConstructor;
 import org.example.backend.model.User;
 import org.example.backend.repository.UserRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
 
 @Service
 @RequiredArgsConstructor
 public class UserService {
-    private static final Logger LOGGER = LoggerFactory.getLogger(UserService.class);
 
     private final UserRepository userRepository;
 
@@ -28,24 +27,19 @@ public class UserService {
     }
 
     public User addFavoriteProject(User user, String projectId) {
-        User existingUser = userRepository.findById(user.getId()).orElseThrow(() -> new RuntimeException("User not found"));
-        if(existingUser.getFavoriteProjects().contains(projectId)) {
-            LOGGER.info("Project already in favorites: {}", projectId);
-            return existingUser;
+        if (user.getFavoriteProjects() == null) {
+            user.setFavoriteProjects(new ArrayList<>());
         }
-        existingUser.getFavoriteProjects().add(projectId);
-        userRepository.save(existingUser);
-        return existingUser;
+        user.getFavoriteProjects().add(projectId);
+        userRepository.save(user);
+        return user;
     }
 
     public User removeFavoriteProject(User user, String projectId) {
-        User existingUser = userRepository.findById(user.getId()).orElseThrow(() -> new RuntimeException("User not found"));
-        if(!existingUser.getFavoriteProjects().contains(projectId)) {
-            LOGGER.info("Project not in favorites: {}", projectId);
-            return existingUser;
+        if (user.getFavoriteProjects() != null) {
+            user.getFavoriteProjects().remove(projectId);
+            userRepository.save(user);
         }
-        existingUser.getFavoriteProjects().remove(projectId);
-        userRepository.save(existingUser);
-        return existingUser;
+        return user;
     }
 }
