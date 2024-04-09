@@ -9,6 +9,8 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/users")
 @RequiredArgsConstructor
@@ -16,6 +18,10 @@ public class UserController {
 
     private final UserService service;
 
+    @GetMapping
+    public List<User> getAllUsers() {
+        return service.getAllUsers();
+    }
     @GetMapping("/me")
     public User getMe(@AuthenticationPrincipal OAuth2User user) {
         return new User(user.getAttributes());
