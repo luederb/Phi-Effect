@@ -69,12 +69,6 @@ public class UserController {
         return userService.acceptFriendRequest(user, requestId);
     }
 
-    @PutMapping("/{id}/friendRequests/{requestId}/reject")
-    public User rejectFriendRequest(@PathVariable String id, @PathVariable String requestId) {
-        User user = userService.getUserById(id);
-        return userService.rejectFriendRequest(user, requestId);
-    }
-
     @GetMapping("/{id}/pendingFriendRequests")
     public List<FriendRequest> getPendingFriendRequests(@PathVariable String id) {
         User user = userService.getUserById(id);

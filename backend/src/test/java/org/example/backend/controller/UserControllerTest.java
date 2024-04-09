@@ -1,6 +1,9 @@
 package org.example.backend.controller;
 
+import org.example.backend.model.FriendRequest;
+import org.example.backend.repository.FriendRequestRepository;
 import org.example.backend.repository.UserRepository;
+import org.example.backend.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.example.backend.model.User;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -10,8 +13,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-
-import java.util.ArrayList;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -28,14 +29,27 @@ class UserControllerTest {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private FriendRequestRepository friendRequestRepository;
+
     @BeforeEach
     void setUp() {
+        userRepository.deleteAll(); // Clear the repository before each test
+        friendRequestRepository.deleteAll(); // Clear the repository before each test
+
         User user = new User();
         user.setId("1");
         user.setName("Test User");
-        user.setFavoriteProjects(new ArrayList<>()); // Initialize the list
         userRepository.save(user);
+
+        FriendRequest friendRequest = new FriendRequest();
+        friendRequest.setId("1");
+        friendRequest.setSender(user);
+        friendRequest.setReceiver(user);
+        friendRequest.setStatus(UserService.STATUS_PENDING);
+        friendRequestRepository.save(friendRequest);
     }
+
 
     @WithMockUser
     @Test
@@ -76,8 +90,49 @@ class UserControllerTest {
         mockMvc.perform(get("/api/users")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(1)))
+                .andExpect(jsonPath("$", hasSize(1))) // Expect only 1 user
                 .andExpect(jsonPath("$[0].id").value("1"))
                 .andExpect(jsonPath("$[0].name").value("Test User"));
+    }
+
+    @WithMockUser
+    @Test
+    void testSendFriendRequest() throws Exception {
+        User receiver = new User();
+        receiver.setId("2");
+        receiver.setName("Test User 2");
+        userRepository.save(receiver);
+
+        mockMvc.perform(post("/api/users/1/friendRequests")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"id\":\"2\",\"name\":\"Test User 2\"}"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.sender.id").value("1"))
+                .andExpect(jsonPath("$.receiver.id").value("2"));
+    }
+    @WithMockUser
+    @Test
+    void testAcceptFriendRequest() throws Exception {
+        mockMvc.perform(put("/api/users/1/friendRequests/1/accept")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk()) // Expect a 200 OK status
+                .andExpect(jsonPath("$.id").value("1")) // Check if the returned user has the correct id
+                .andExpect(jsonPath("$.name").value("Test User")); // Check if the returned user has the correct name
+    }
+
+    @WithMockUser
+    @Test
+    void testGetPendingFriendRequests() throws Exception {
+        mockMvc.perform(get("/api/users/1/pendingFriendRequests")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+
+    @WithMockUser
+    @Test
+    void testGetFriends() throws Exception {
+        mockMvc.perform(get("/api/users/1/friends")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
     }
 }

@@ -26,6 +26,8 @@ public class User {
     private String picture;
     private boolean isNewUser;
     private List<String> favoriteProjects;
+
+    @Builder.Default
     private List<Friend> friends = new ArrayList<>();
 
     public User(Map<String, Object> attributes) {

@@ -15,7 +15,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserService {
 
-    private static final String STATUS_PENDING = "pending";
+    public static final String STATUS_PENDING = "pending";
 
     private final UserRepository userRepository;
 
@@ -78,16 +78,6 @@ public class UserService {
         userRepository.save(sender);
         userRepository.save(receiver);
         return user.getId().equals(sender.getId()) ? sender : receiver;
-    }
-
-    public User rejectFriendRequest(User user, String requestId) {
-        FriendRequest friendRequest = friendRequestRepository.findById(requestId).orElseThrow();
-        if (!friendRequest.getStatus().equals(STATUS_PENDING)) {
-            throw new IllegalStateException("Cannot reject a non-pending friend request");
-        }
-        friendRequest.setStatus("rejected");
-        friendRequestRepository.save(friendRequest);
-        return user;
     }
 
     public List<FriendRequest> getPendingFriendRequests(User user) {
