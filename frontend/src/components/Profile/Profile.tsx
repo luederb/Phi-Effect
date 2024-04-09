@@ -67,7 +67,7 @@ export default function Profile({handleLogin}: Readonly<ProfileProps>) {
                     email: "",
                     phone: 0,
                     bio: "",
-                    picture: ""
+                    picture: "",
                 })
                 setUserExists(false);
             })
@@ -104,7 +104,7 @@ export default function Profile({handleLogin}: Readonly<ProfileProps>) {
             <div className="profile-without-login">
                 <p>You don't have a profile, yet. Please sign in to view your profile</p>
                 <div>
-                    <button onClick={handleLogin}>Login</button>
+                    <button className="classic-button" onClick={handleLogin}>Login</button>
                 </div>
             </div>
         )
@@ -115,7 +115,7 @@ export default function Profile({handleLogin}: Readonly<ProfileProps>) {
             <div className="profile-without-login">
                 <p>Please log in to view your profile</p>
                 <div>
-                    <button onClick={handleLogin}>Login</button>
+                    <button className="classic-button" onClick={handleLogin}>Login</button>
                 </div>
             </div>
         )
@@ -154,10 +154,10 @@ export default function Profile({handleLogin}: Readonly<ProfileProps>) {
                                 <p>{user.bio}</p>
                             </div>
                             <div className="profile-buttons">
-                                <button onClick={logout}>Logout
+                                <button className="classic-button" onClick={logout}>Logout
                                 </button>
-                                <button onClick={() => setEditUserData(true)}>Edit Profile</button>
-                                <button onClick={deleteUserData}>Delete Profile</button>
+                                <button className="classic-button" onClick={() => setEditUserData(true)}>Edit Profile</button>
+                                <button className="classic-button" onClick={deleteUserData}>Delete Profile</button>
                             </div>
                         </>}
                 </div>

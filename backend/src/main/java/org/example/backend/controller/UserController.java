@@ -37,4 +37,16 @@ public class UserController {
     public void deleteUserById(@PathVariable String id){
         service.deleteUserById(id);
     }
+    @PutMapping("/{userId}/updateFavoriteProjectsOfUser/{projectId}")
+    public User updateUserById(@PathVariable String userId, @PathVariable String projectId) {
+        User user = service.getUserById(userId);
+        if (user == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
+        }
+        if(user.getFavoriteProjects().contains(projectId)) {
+            return service.removeFavoriteProject(user, projectId);
+        } else {
+            return service.addFavoriteProject(user, projectId);
+        }
+    }
 }
