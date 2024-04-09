@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.example.backend.model.User;
 import org.example.backend.service.UserService;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
@@ -20,9 +19,8 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping
-    public ResponseEntity<List<User>> getAllUsers() {
-        List<User> users = userService.getAllUsers();
-        return new ResponseEntity<>(users, HttpStatus.OK);
+    public List<User> getAllUsers() {
+        return userService.getAllUsers();
     }
     @GetMapping("/me")
     public User getMe(@AuthenticationPrincipal OAuth2User user) {
