@@ -1,12 +1,15 @@
 .project-card-content {
-    max-height: 9rem;
+    max-height: 8.8rem;
+    border-radius: 0.5rem;
     overflow: hidden;
     transition: max-height 1s ease-in-out;
+    padding-bottom: 10px;
 }
 
 .project-card-content.show {
     max-height: 1000px;
-
+    border-radius: 0.5rem;
+    padding-bottom: 10px;
 }
 
 .project-card {
@@ -69,6 +72,8 @@
 }
 
 .project-card-line {
+    padding-inline: 10px;
     display: grid;
     grid-template-columns: 1fr 1fr;
+    justify-items: flex-start;
 }

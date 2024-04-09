@@ -9,13 +9,19 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/users")
 @RequiredArgsConstructor
 public class UserController {
 
-    private final UserService service;
+    private final UserService userService;
 
+    @GetMapping
+    public List<User> getAllUsers() {
+        return userService.getAllUsers();
+    }
     @GetMapping("/me")
     public User getMe(@AuthenticationPrincipal OAuth2User user) {
         return new User(user.getAttributes());
@@ -23,7 +29,7 @@ public class UserController {
 
     @GetMapping("/{id}")
     public User getUserById(@PathVariable String id) {
-        return service.getUserById(id);
+        return userService.getUserById(id);
     }
 
     @PutMapping("/{id}")
@@ -31,22 +37,22 @@ public class UserController {
         if (!user.getId().equals(id)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The id in the url does not match the request body's id");
         }
-        return service.saveUser(user);
+        return userService.saveUser(user);
     }
     @DeleteMapping("/{id}")
     public void deleteUserById(@PathVariable String id){
-        service.deleteUserById(id);
+        userService.deleteUserById(id);
     }
     @PutMapping("/{userId}/updateFavoriteProjectsOfUser/{projectId}")
     public User updateUserById(@PathVariable String userId, @PathVariable String projectId) {
-        User user = service.getUserById(userId);
+        User user = userService.getUserById(userId);
         if (user == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
         }
         if(user.getFavoriteProjects().contains(projectId)) {
-            return service.removeFavoriteProject(user, projectId);
+            return userService.removeFavoriteProject(user, projectId);
         } else {
-            return service.addFavoriteProject(user, projectId);
+            return userService.addFavoriteProject(user, projectId);
         }
     }
 }
