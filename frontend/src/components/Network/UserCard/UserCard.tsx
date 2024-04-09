@@ -41,7 +41,7 @@ export default function UserCard({user, isExpanded, onUserClick}: Readonly<UserC
                     {user.phone !== 0 &&
                         <div className="user-card-line">
                             <p>Phone: </p>
-                            <p className="phone-number">{`0${user.phone?.toString().slice(0, 3)}  -  ${user.phone?.toString().slice(3, 5)} ${user.phone?.toString().slice(5, 7)} ${user.phone?.toString().slice(7)}`}</p>
+                            <p className="phone-number">{`0${user.phone?.toString().slice(0, 3)}  -  ${user.phone?.toString().slice(3, 5)} ${user.phone?.toString().slice(5, 7)} ${user.phone?.toString().slice(7,9)} ${user.phone?.toString().slice(9)}`}</p>
                         </div>}
                     {user.bio !== "" &&
                         <div className="user-card-line">

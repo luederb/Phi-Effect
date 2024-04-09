@@ -16,7 +16,9 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.ArrayList;
+import java.util.List;
 
+import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -150,5 +152,34 @@ class UserControllerTest {
                 .andExpect(jsonPath("$.name").value("Test User"));
 
         verify(userService, times(1)).removeFavoriteProject(any(User.class), anyString());
+    }
+
+    @Test
+    @WithMockUser
+    void getAllUsersTest() throws Exception {
+        List<User> users = new ArrayList<>();
+
+        User user1 = new User();
+        user1.setId("1");
+        user1.setName("Test User 1");
+        users.add(user1);
+
+        User user2 = new User();
+        user2.setId("2");
+        user2.setName("Test User 2");
+        users.add(user2);
+
+        when(userService.getAllUsers()).thenReturn(users);
+
+        mockMvc.perform(get("/api/users")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(jsonPath("$[0].id").value("1"))
+                .andExpect(jsonPath("$[0].name").value("Test User 1"))
+                .andExpect(jsonPath("$[1].id").value("2"))
+                .andExpect(jsonPath("$[1].name").value("Test User 2"));
+
+        verify(userService, times(1)).getAllUsers();
     }
 }
