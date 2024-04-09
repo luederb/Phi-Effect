@@ -132,7 +132,7 @@ class UserTest {
         User user = new User();
         user.setId("1");
 
-        String expected = "User(id=1, name=null, firstName=null, lastName=null, email=null, phone=null, bio=null, picture=null, favoriteProjects=null)";
+        String expected = "User(id=1, name=null, firstName=null, lastName=null, email=null, phone=null, bio=null, picture=null, isNewUser=false, favoriteProjects=null, friends=[])";
         assertEquals(expected, user.toString());
     }
     @Test
