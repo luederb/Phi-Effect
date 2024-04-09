@@ -1,12 +1,13 @@
 .project-card-content {
-    max-height: 9rem;
+    max-height: 9.7rem;
+    border-radius: 0.5rem;
     overflow: hidden;
     transition: max-height 1s ease-in-out;
 }
 
 .project-card-content.show {
     max-height: 1000px;
-
+    border-radius: 0.5rem;
 }
 
 .project-card {
