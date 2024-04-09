@@ -29,7 +29,12 @@ const icons: { [key: string]: IconType } = {
         title: "moreArrow",
         viewBox: "0 0 24 24",
         path: "M12 15.375L6 9.37501L7.4 7.97501L12 12.575L16.6 7.97501L18 9.37501L12 15.375Z",
-    }
+    },
+    lessArrow: {
+        title: "lessArrow",
+        viewBox: "0 0 24 24",
+        path: "M7.4 15.375L6 13.975L12 7.97501L18 13.975L16.6 15.375L12 10.775L7.4 15.375Z",
+    },
 }
 
 interface IconProps {

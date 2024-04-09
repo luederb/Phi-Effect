@@ -55,7 +55,7 @@ export default function EditProfileForm({handleUpdateUserData, user}: Readonly<E
                               value={currentUserData.bio} onChange={onProfilDataInputChange}/>
                 </div>
             </form>
-            <button className="profile-buttons" onClick={() => handleUpdateUserData(currentUserData)}>Update</button>
+            <button className="classic-button profile-buttons" onClick={() => handleUpdateUserData(currentUserData)}>Update</button>
         </div>
     )
 }

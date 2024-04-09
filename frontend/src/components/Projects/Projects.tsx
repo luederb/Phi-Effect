@@ -70,7 +70,7 @@ return (
                     project={project}
                     isExpanded={project.id === expandedProjectId}
                     onProjectClick={handleProjectClick}
-                    isFavorite={favoriteProjects.includes(project.id)}
+                    isFavorite={favoriteProjects ? favoriteProjects.includes(project.id) : false}
                     handleUpdateFavoriteProjectsForCurrentUser={updateFavoriteProjectsForCurrentUser}
                 />)
             )}

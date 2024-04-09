@@ -1,3 +1,4 @@
+import WebFont from 'webfontloader';
 import Layout from "./Layout.tsx";
 import {Route, Routes} from "react-router-dom";
 import Home from "./components/Home/Home.tsx";
@@ -10,6 +11,11 @@ import {Logger} from "./Logger/Logger.tsx";
 import CreateNewProject from "./components/Projects/CreateNewProject/CreateNewProject.tsx";
 import ProjectDetailsPage from "./components/Projects/EditProjectPage/EditProjectPage.tsx";
 
+WebFont.load({
+    google: {
+        families: ['Open Sans:400,700', 'Kalam:400,700']
+    }
+});
 export default function App() {
 
     function login() {
