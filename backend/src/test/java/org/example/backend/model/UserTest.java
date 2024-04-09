@@ -2,7 +2,9 @@ package org.example.backend.model;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static org.example.backend.util.AttributeUtils.getStringAttribute;
@@ -123,5 +125,27 @@ class UserTest {
         attributes.put("name", "John Doe");
 
         assertThrows(IllegalArgumentException.class, () -> getStringAttribute(attributes, "missingAttribute"));
+    }
+
+    @Test
+    void testToString() {
+        User user = new User();
+        user.setId("1");
+
+        String expected = "User(id=1, name=null, firstName=null, lastName=null, email=null, phone=null, bio=null, picture=null, favoriteProjects=null)";
+        assertEquals(expected, user.toString());
+    }
+    @Test
+    void testFavoriteProjects() {
+        User user = new User();
+        List<String> favoriteProjects = new ArrayList<>();
+        favoriteProjects.add("Project1");
+        favoriteProjects.add("Project2");
+
+        user.setFavoriteProjects(favoriteProjects);
+
+        assertEquals(favoriteProjects, user.getFavoriteProjects());
+        assertEquals("Project1", user.getFavoriteProjects().get(0));
+        assertEquals("Project2", user.getFavoriteProjects().get(1));
     }
 }
