@@ -1,12 +1,10 @@
 package org.example.backend.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -28,6 +26,7 @@ public class User {
     private String picture;
     private boolean isNewUser;
     private List<String> favoriteProjects;
+    private List<Friend> friends = new ArrayList<>();
 
     public User(Map<String, Object> attributes) {
         LOGGER.info("Creating User with attributes: {}", attributes);
