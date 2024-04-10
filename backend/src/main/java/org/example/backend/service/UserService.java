@@ -92,12 +92,12 @@ public class UserService {
         return user;
     }
 
-    public List<FriendRequest> getSentFriendRequestsForCurrentUser(User user) {
-    return friendRequestRepository.findBySender(user);
+    public List<FriendRequest> getSentFriendRequestsForCurrentUser(String senderId) {
+        return friendRequestRepository.findBySenderId(senderId);
     }
 
-    public List<FriendRequest> getReceivedFriendRequestsForCurrentUser(User user) {
-        return friendRequestRepository.findByReceiver(user);
+    public List<FriendRequest> getReceivedFriendRequestsForCurrentUser(String receiverId) {
+        return friendRequestRepository.findByReceiverId(receiverId);
     }
 
     public List<User> getFriends(User user) {
@@ -107,6 +107,4 @@ public class UserService {
         }
         return friends;
     }
-
-
 }

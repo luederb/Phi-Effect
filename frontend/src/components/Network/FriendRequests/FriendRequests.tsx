@@ -9,6 +9,7 @@ export default function FriendRequests() {
     const currentUserId = localStorage.getItem("currentUserId");
     const [receivedFriendRequests, setReceivedFriendRequests] = useState<FriendRequest[]>([]);
     const [sentFriendRequests, setSentFriendRequests] = useState<FriendRequest[]>([]);
+
     function fetchSentFriendRequestsForCurrentUser() {
         axios.get(`/api/users/${currentUserId}/sentFriendRequestsForCurrentUser`)
             .then(response => {
@@ -61,46 +62,62 @@ export default function FriendRequests() {
 
     return (
         <div className="friend-request-list">
-            <h3>Friend Requests</h3>
-            {/*{friendRequests.length > 0 &&
-                {
-                    friendRequests.map(friendRequest => (
-                        friendRequest.status === "pending" &&
-                        <>
-                            <h3>Pending Friend Requests: </h3>
-                            <ul className="friends-requests-list">
-                                <li key={friendRequest.id} className="friend-request">
-                                    <p>{friendRequest.sender.name}</p>
-                                    <button className="classic-button"
-                                            onClick={() => acceptFriendRequest(friendRequest.receiver.id, friendRequest.id)}>accept
-                                    </button>
-                                    <button className="classic-button"
-                                            onClick={() => rejectFriendRequest(friendRequest.receiver.id, friendRequest.id)}>reject
-                                    </button>
-                                </li>
-                            </ul>
-                        </>
-                    friendRequest.status === "accepted" &&
-                        <>
-                            <h3>Accepted Friend Requests: </h3>
-                            <ul className="friends-requests-list">
-                                <li key={friendRequest.id} className="friend-request">
-                                    <p>{friendRequest.sender.name}</p>
-                                </li>
-                            </ul>
-                        </>
-                    friendRequest.status === "rejected" &&
-                        <>
-                            <h3>Rejected Friend Requests: </h3>
-                            <ul className="friends-requests-list">
-                                <li key={friendRequest.id} className="friend-request">
-                                    <p>{friendRequest.sender.name}</p>
-                                </li>
-                            </ul>
-                        </>
-                ))}
-            }*/}
-
+            {receivedFriendRequests.length > 0 &&
+                <>
+                    <h3>Received Friend Requests</h3>
+                    <ul className="friends-requests-list">
+                        {receivedFriendRequests.map(friendRequest => (
+                            <li key={friendRequest.id} className="friend-request">
+                                <p>{friendRequest.sender.name}</p>
+                                {friendRequest.status === "pending" &&
+                                    <>
+                                        <button className="classic-button"
+                                                onClick={() => acceptFriendRequest(friendRequest.receiver.id, friendRequest.id)}>accept
+                                        </button>
+                                        <button className="classic-button"
+                                                onClick={() => rejectFriendRequest(friendRequest.receiver.id, friendRequest.id)}>reject
+                                        </button>
+                                    </>
+                                }
+                                {friendRequest.status === "accepted" &&
+                                    <p>Accepted</p>
+                                }
+                                {friendRequest.status === "rejected" &&
+                                    <p>Rejected</p>
+                                }
+                            </li>
+                        ))}
+                    </ul>
+                </>
+            }
+            {sentFriendRequests.length > 0 &&
+                <>
+                    <h3>Sent Friend Requests</h3>
+                    <ul className="friends-requests-list">
+                        {sentFriendRequests.map(friendRequest => (
+                            <li key={friendRequest.id} className="friend-request">
+                                <p>{friendRequest.sender.name}</p>
+                                {friendRequest.status === "pending" &&
+                                    <>
+                                        <button className="classic-button"
+                                                onClick={() => acceptFriendRequest(friendRequest.receiver.id, friendRequest.id)}>accept
+                                        </button>
+                                        <button className="classic-button"
+                                                onClick={() => rejectFriendRequest(friendRequest.receiver.id, friendRequest.id)}>reject
+                                        </button>
+                                    </>
+                                }
+                                {friendRequest.status === "accepted" &&
+                                    <p>Accepted</p>
+                                }
+                                {friendRequest.status === "rejected" &&
+                                    <p>Rejected</p>
+                                }
+                            </li>
+                        ))}
+                    </ul>
+                </>
+            }
         </div>
     )
 }
