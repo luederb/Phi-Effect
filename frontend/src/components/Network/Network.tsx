@@ -6,6 +6,7 @@ import {Logger} from "../../Logger/Logger.tsx";
 import UserCard from "./UserCard/UserCard.tsx";
 import FriendRequests from "./FriendRequests/FriendRequests.tsx";
 import {FriendRequest} from "../../Types/FriendRequest.ts";
+import AllUsersList from "./AllUsersList/AllUsersList.tsx";
 
 export default function Network() {
     const currentUserId = localStorage.getItem("currentUserId");
@@ -112,6 +113,7 @@ export default function Network() {
                 receivedFriendRequests={receivedFriendRequests}
                 handleSetReceivedFriendRequests={setReceivedFriendRequests}
                 handleSetSentFriendRequests={setSentFriendRequests}
+                friends={friends}
             />
 
             <h3>List of all Friends:</h3>
@@ -121,31 +123,25 @@ export default function Network() {
                     :
                     friends.map(friend => (
                         <li key={friend.id}>
-                            <UserCard user={friend}
-                                      isExpanded={friend.id === expandedUserId}
-                                      handleRemoveFriend={removeFriend}
-                                      isFriend={true}
-                            />
+                            <button onClick={() => onUserCardClick(friend.id)}>
+                                <UserCard user={friend}
+                                          isExpanded={friend.id === expandedUserId}
+                                          handleRemoveFriend={removeFriend}
+                                          isFriend={
+                                              friends.some(friend => friend.id === currentUserId)
+                                          }
+                                />
+                            </button>
                         </li>
                     ))}
             </ul>
             <h3>List of all Users:</h3>
-            <ul className="user-list">
-                {users.map((user) => (
-                    user.id !== currentUserId &&
-                    <li key={user.id}>
-                        <button className="user-card-content" onClick={() => onUserCardClick(user.id)}>
-                            <UserCard user={user}
-                                      isExpanded={user.id === expandedUserId}
-                                      handleSendFriendRequest={sendFriendRequest}
-                                      handleRemoveFriend={removeFriend}
-                                      isFriend={
-                                          friends.some(friend => friend.id === user.id)
-                                      }/>
-                        </button>
-                    </li>
-                ))}
-            </ul>
+            <AllUsersList users={users}
+                          currentUserId={currentUserId}
+                          friends={friends}
+                          sendFriendRequest={sendFriendRequest}
+                          removeFriend={removeFriend}/>
+
         </div>
     )
 }
