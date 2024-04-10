@@ -80,12 +80,22 @@ public class UserService {
         return user.getId().equals(sender.getId()) ? sender : receiver;
     }
 
-    public List<FriendRequest> getSentFriendRequestsForCurrentUser(User user) {
-    return friendRequestRepository.findBySender(user);
+    public User rejectFriendRequest(User user, String requestId) {
+        FriendRequest friendRequest = friendRequestRepository.findById(requestId).orElseThrow();
+        if (!friendRequest.getStatus().equals(Status.PENDING)) {
+            throw new IllegalStateException("Cannot reject a non-pending friend request");
+        }
+        friendRequest.setStatus(Status.PENDING);
+        friendRequestRepository.save(friendRequest);
+        return user;
     }
 
-    public List<FriendRequest> getReceivedFriendRequestsForCurrentUser(User user) {
-        return friendRequestRepository.findByReceiver(user);
+    public List<FriendRequest> getSentFriendRequestsForCurrentUser(String senderId) {
+        return friendRequestRepository.findBySenderId(senderId);
+    }
+
+    public List<FriendRequest> getReceivedFriendRequestsForCurrentUser(String receiverId) {
+        return friendRequestRepository.findByReceiverId(receiverId);
     }
 
     public List<User> getFriends(User user) {
@@ -95,6 +105,4 @@ public class UserService {
         }
         return friends;
     }
-
-
 }

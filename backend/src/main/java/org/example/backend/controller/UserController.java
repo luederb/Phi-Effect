@@ -80,14 +80,12 @@ public class UserController {
 
     @GetMapping("/{id}/sentFriendRequestsForCurrentUser")
     public List<FriendRequest> getFriendRequestsForCurrentUser(@PathVariable String id) {
-        User user = userService.getUserById(id);
-        return userService.getSentFriendRequestsForCurrentUser(user);
+        return userService.getSentFriendRequestsForCurrentUser(id);
     }
 
     @GetMapping("/{id}/receivedFriendRequestsForCurrentUser")
     public List<FriendRequest> getFriendReceivedRequestsForCurrentUser(@PathVariable String id) {
-        User user = userService.getUserById(id);
-        return userService.getReceivedFriendRequestsForCurrentUser(user);
+        return userService.getReceivedFriendRequestsForCurrentUser(id);
     }
 
     @GetMapping("/{id}/friends")
