@@ -66,6 +66,13 @@ public class UserController {
         return userService.sendFriendRequest(sender, receiver);
     }
 
+    @DeleteMapping("/{userId}/friends/{friendId}")
+    public User removeFriend(@PathVariable String userId, @PathVariable String friendId) {
+        User user = userService.getUserById(userId);
+        User friend = userService.getUserById(friendId);
+        return userService.removeFriend(user, friend);
+    }
+
     @PutMapping("/{friendId}/friendRequests/{requestId}/accept")
     public User acceptFriendRequest(@PathVariable String friendId, @PathVariable String requestId) {
         User user = userService.getUserById(friendId);
