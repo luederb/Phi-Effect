@@ -173,6 +173,7 @@ class UserServiceTest {
 
         assertEquals(user1.getId(), result.getSender().getId());
         assertEquals(user2.getId(), result.getReceiver().getId());
+        assertEquals(friendRequest.getId(), result.getId());
         assertEquals(Status.PENDING, result.getStatus());
     }
 
