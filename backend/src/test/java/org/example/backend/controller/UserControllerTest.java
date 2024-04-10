@@ -1,9 +1,9 @@
 package org.example.backend.controller;
 
 import org.example.backend.model.FriendRequest;
+import org.example.backend.model.Status;
 import org.example.backend.repository.FriendRequestRepository;
 import org.example.backend.repository.UserRepository;
-import org.example.backend.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.example.backend.model.User;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -46,7 +46,7 @@ class UserControllerTest {
         friendRequest.setId("1");
         friendRequest.setSender(user);
         friendRequest.setReceiver(user);
-        friendRequest.setStatus(UserService.STATUS_PENDING);
+        friendRequest.setStatus(Status.PENDING);
         friendRequestRepository.save(friendRequest);
     }
 

@@ -2,6 +2,7 @@ package org.example.backend.service;
 
 import org.example.backend.model.Friend;
 import org.example.backend.model.FriendRequest;
+import org.example.backend.model.Status;
 import org.example.backend.model.User;
 import org.example.backend.repository.FriendRequestRepository;
 import org.example.backend.repository.UserRepository;
@@ -39,7 +40,7 @@ class UserServiceTest {
         friendRequest.setId("1");
         friendRequest.setSender(user1);
         friendRequest.setReceiver(user2);
-        friendRequest.setStatus(UserService.STATUS_PENDING);
+        friendRequest.setStatus(Status.PENDING);
     }
 
     @MockBean
@@ -172,7 +173,7 @@ class UserServiceTest {
 
         assertEquals(user1.getId(), result.getSender().getId());
         assertEquals(user2.getId(), result.getReceiver().getId());
-        assertEquals(UserService.STATUS_PENDING, result.getStatus());
+        assertEquals(Status.PENDING, result.getStatus());
     }
 
     @Test
@@ -188,7 +189,7 @@ class UserServiceTest {
     @Test
     void getPendingFriendRequestsTest() {
         when(userRepository.save(any(User.class))).thenReturn(user1);
-        when(friendRequestRepository.findByReceiverAndStatus(any(User.class), anyString())).thenReturn(Collections.singletonList(friendRequest));
+        when(friendRequestRepository.findByReceiverAndStatus(any(User.class), eq(Status.PENDING))).thenReturn(Collections.singletonList(friendRequest));
 
         List<FriendRequest> result = userService.getPendingFriendRequests(user1);
 

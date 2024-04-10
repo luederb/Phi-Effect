@@ -3,6 +3,7 @@ package org.example.backend.service;
 import lombok.RequiredArgsConstructor;
 import org.example.backend.model.Friend;
 import org.example.backend.model.FriendRequest;
+import org.example.backend.model.Status;
 import org.example.backend.model.User;
 import org.example.backend.repository.FriendRequestRepository;
 import org.example.backend.repository.UserRepository;
@@ -15,7 +16,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserService {
 
-    public static final String STATUS_PENDING = "pending";
 
     private final UserRepository userRepository;
 
@@ -58,16 +58,16 @@ public class UserService {
         FriendRequest friendRequest = new FriendRequest();
         friendRequest.setSender(sender);
         friendRequest.setReceiver(receiver);
-        friendRequest.setStatus(STATUS_PENDING);
+        friendRequest.setStatus(Status.PENDING);
         return friendRequestRepository.save(friendRequest);
     }
 
     public User acceptFriendRequest(User user, String requestId) {
         FriendRequest friendRequest = friendRequestRepository.findById(requestId).orElseThrow();
-        if (!friendRequest.getStatus().equals(STATUS_PENDING)) {
+        if (!friendRequest.getStatus().equals(Status.PENDING)) {
             throw new IllegalStateException("Cannot accept a non-pending friend request");
         }
-        friendRequest.setStatus("accepted");
+        friendRequest.setStatus(Status.ACCEPTED);
         friendRequestRepository.save(friendRequest); // Save the updated friendRequest
         User sender = friendRequest.getSender();
         User receiver = friendRequest.getReceiver();
@@ -81,7 +81,7 @@ public class UserService {
     }
 
     public List<FriendRequest> getPendingFriendRequests(User user) {
-        return friendRequestRepository.findByReceiverAndStatus(user, STATUS_PENDING);
+        return friendRequestRepository.findByReceiverAndStatus(user, Status.PENDING);
     }
 
     public List<User> getFriends(User user) {
