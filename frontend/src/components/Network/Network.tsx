@@ -5,6 +5,7 @@ import axios from "axios";
 import {Logger} from "../../Logger/Logger.tsx";
 import UserCard from "./UserCard/UserCard.tsx";
 import FriendRequests from "./FriendRequests/FriendRequests.tsx";
+import {FriendRequest} from "../../Types/FriendRequest.ts";
 
 export default function Network() {
     const currentUserId = localStorage.getItem("currentUserId");
@@ -13,6 +14,9 @@ export default function Network() {
     const [currentUser, setCurrentUser] = useState<User>({} as User);
     const [expandedUserId, setExpandedUserId] = useState<string | null>(null);
     const [friends, setFriends] = useState<User[]>([]);
+    const [receivedFriendRequests, setReceivedFriendRequests] = useState<FriendRequest[]>([]);
+    const [sentFriendRequests, setSentFriendRequests] = useState<FriendRequest[]>([]);
+
 
     function fetchAllUsers() {
         axios.get("/api/users")
@@ -26,6 +30,7 @@ export default function Network() {
                 Logger.error("Error fetching users: ", error);
             })
     }
+
     function fetchFriends() {
         axios.get(`/api/users/${currentUserId}/friends`)
             .then(response => {
@@ -37,7 +42,29 @@ export default function Network() {
             })
     }
 
-    function onUserClick(id: string) {
+    function fetchSentFriendRequestsForCurrentUser() {
+        axios.get(`/api/users/${currentUserId}/sentFriendRequestsForCurrentUser`)
+            .then(response => {
+                Logger.log("Sent Friend requests: ", response.data)
+                setSentFriendRequests([...sentFriendRequests, ...response.data]);
+            })
+            .catch(error => {
+                Logger.error("Error fetching friend requests: ", error);
+            })
+    }
+
+    function fetchReceivedFriendRequestsForCurrentUser() {
+        axios.get(`/api/users/${currentUserId}/receivedFriendRequestsForCurrentUser`)
+            .then(response => {
+                Logger.log("Received Friend requests: ", response.data)
+                setReceivedFriendRequests([...receivedFriendRequests, ...response.data]);
+            })
+            .catch(error => {
+                Logger.error("Error fetching friend requests: ", error);
+            })
+    }
+
+    function onUserCardClick(id: string) {
         if (expandedUserId === id) {
             setExpandedUserId(null);
         } else {
@@ -56,9 +83,23 @@ export default function Network() {
 
     }
 
+    function removeFriend(friendId: string) {
+        axios.delete(`/api/users/${currentUserId}/friends/${friendId}`)
+            .then(response => {
+                Logger.log("Friend removed: ", response.data);
+                setFriends(friends.filter(friend => friend.id !== friendId));
+            })
+            .catch(error => {
+                Logger.error("Error removing friend: ", error);
+            })
+
+    }
+
     useEffect(() => {
         fetchAllUsers();
         fetchFriends();
+        fetchSentFriendRequestsForCurrentUser();
+        fetchReceivedFriendRequestsForCurrentUser();
         // eslint-disable-next-line
     }, []);
 
@@ -66,36 +107,42 @@ export default function Network() {
         <div className="network-container">
             <h2>Network</h2>
             <p>connect to fellow film makers</p>
-
-            <FriendRequests/>
+            <FriendRequests
+                sentFriendRequests={sentFriendRequests}
+                receivedFriendRequests={receivedFriendRequests}
+                handleSetReceivedFriendRequests={setReceivedFriendRequests}
+                handleSetSentFriendRequests={setSentFriendRequests}
+            />
 
             <h3>List of all Friends:</h3>
             <ul className="user-list">
                 {friends.length === 0 ?
                     <p>You have no friends</p>
                     :
-                friends.map(friend => (
-                    <li key={friend.id}>
-                        <UserCard user={friend}
-                                  handleOnUserClick={onUserClick}
-                                  isExpanded={friend.id === expandedUserId}
-                                  isFriend={true}
-                        />
-                    </li>
-                ))}
+                    friends.map(friend => (
+                        <li key={friend.id}>
+                            <UserCard user={friend}
+                                      isExpanded={friend.id === expandedUserId}
+                                      handleRemoveFriend={removeFriend}
+                                      isFriend={true}
+                            />
+                        </li>
+                    ))}
             </ul>
             <h3>List of all Users:</h3>
             <ul className="user-list">
                 {users.map((user) => (
                     user.id !== currentUserId &&
                     <li key={user.id}>
-                        <UserCard user={user}
-                                  handleOnUserClick={onUserClick}
-                                  isExpanded={user.id === expandedUserId}
-                        handleSendFriendRequest={sendFriendRequest}
-                        isFriend={
-                            friends.some(friend => friend.id === user.id)
-                        }/>
+                        <button className="user-card-content" onClick={() => onUserCardClick(user.id)}>
+                            <UserCard user={user}
+                                      isExpanded={user.id === expandedUserId}
+                                      handleSendFriendRequest={sendFriendRequest}
+                                      handleRemoveFriend={removeFriend}
+                                      isFriend={
+                                          friends.some(friend => friend.id === user.id)
+                                      }/>
+                        </button>
                     </li>
                 ))}
             </ul>

@@ -107,4 +107,12 @@ public class UserService {
         }
         return friends;
     }
+
+    public User removeFriend(User user, User friend) {
+        user.getFriends().removeIf(f -> f.getId().equals(friend.getId()));
+        friend.getFriends().removeIf(f -> f.getId().equals(user.getId()));
+        userRepository.save(user);
+        userRepository.save(friend);
+        return user;
+    }
 }
