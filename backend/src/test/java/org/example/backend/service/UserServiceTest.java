@@ -187,16 +187,6 @@ class UserServiceTest {
         assertEquals(user1.getId(), result.getId());
     }
 
-    @Test
-    void getPendingFriendRequestsTest() {
-        when(userRepository.save(any(User.class))).thenReturn(user1);
-        when(friendRequestRepository.findByReceiverAndStatus(any(User.class), eq(Status.PENDING))).thenReturn(Collections.singletonList(friendRequest));
-
-        List<FriendRequest> result = userService.getPendingFriendRequests(user1);
-
-        assertEquals(1, result.size());
-        assertEquals(friendRequest.getId(), result.getFirst().getId());
-    }
 
     @Test
     void getFriendsTest() {

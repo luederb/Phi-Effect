@@ -80,8 +80,12 @@ public class UserService {
         return user.getId().equals(sender.getId()) ? sender : receiver;
     }
 
-    public List<FriendRequest> getPendingFriendRequests(User user) {
-        return friendRequestRepository.findByReceiverAndStatus(user, Status.PENDING);
+    public List<FriendRequest> getSentFriendRequestsForCurrentUser(User user) {
+    return friendRequestRepository.findBySender(user);
+    }
+
+    public List<FriendRequest> getReceivedFriendRequestsForCurrentUser(User user) {
+        return friendRequestRepository.findByReceiver(user);
     }
 
     public List<User> getFriends(User user) {
@@ -91,4 +95,6 @@ public class UserService {
         }
         return friends;
     }
+
+
 }
