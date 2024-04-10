@@ -8,5 +8,8 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 @Repository
 public interface FriendRequestRepository extends MongoRepository<FriendRequest, String> {
-    List<FriendRequest> findByReceiverAndStatus(User receiver, String status);
+    // New methods
+    List<FriendRequest> findBySender(User sender);
+
+    List<FriendRequest> findByReceiver(User receiver);
 }

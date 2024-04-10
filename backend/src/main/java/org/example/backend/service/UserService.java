@@ -16,6 +16,8 @@ import java.util.List;
 public class UserService {
 
     public static final String STATUS_PENDING = "pending";
+    public static final String STATUS_ACCEPTED = "accepted";
+    public static final String STATUS_REJECTED = "rejected";
 
     private final UserRepository userRepository;
 
@@ -67,7 +69,7 @@ public class UserService {
         if (!friendRequest.getStatus().equals(STATUS_PENDING)) {
             throw new IllegalStateException("Cannot accept a non-pending friend request");
         }
-        friendRequest.setStatus("accepted");
+        friendRequest.setStatus(STATUS_ACCEPTED);
         friendRequestRepository.save(friendRequest); // Save the updated friendRequest
         User sender = friendRequest.getSender();
         User receiver = friendRequest.getReceiver();
@@ -80,8 +82,22 @@ public class UserService {
         return user.getId().equals(sender.getId()) ? sender : receiver;
     }
 
-    public List<FriendRequest> getPendingFriendRequests(User user) {
-        return friendRequestRepository.findByReceiverAndStatus(user, STATUS_PENDING);
+    public User rejectFriendRequest(User user, String requestId) {
+        FriendRequest friendRequest = friendRequestRepository.findById(requestId).orElseThrow();
+        if (!friendRequest.getStatus().equals(STATUS_PENDING)) {
+            throw new IllegalStateException("Cannot reject a non-pending friend request");
+        }
+        friendRequest.setStatus(STATUS_REJECTED);
+        friendRequestRepository.save(friendRequest);
+        return user;
+    }
+
+    public List<FriendRequest> getSentFriendRequestsForCurrentUser(User user) {
+    return friendRequestRepository.findBySender(user);
+    }
+
+    public List<FriendRequest> getReceivedFriendRequestsForCurrentUser(User user) {
+        return friendRequestRepository.findByReceiver(user);
     }
 
     public List<User> getFriends(User user) {
@@ -91,4 +107,6 @@ public class UserService {
         }
         return friends;
     }
+
+
 }
