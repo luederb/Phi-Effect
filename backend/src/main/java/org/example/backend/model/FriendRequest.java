@@ -15,7 +15,7 @@ public class FriendRequest {
     private String id;
     private User sender;
     private User receiver;
-    private String status;
+    private Status status;
     @CreatedDate
     private Instant timestamp;
 }

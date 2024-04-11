@@ -60,28 +60,27 @@ export default function FriendRequests({
                 <ul className="friends-requests-list">
                     {receivedFriendRequests.map(receivedFriendRequest => (
                         <li key={receivedFriendRequest.id} className="friend-request">
-                            <button onClick={() => onUserCardClick(receivedFriendRequest.sender.id)}>
-                                <UserCard receivedFriendRequest={receivedFriendRequest}
-                                          user={receivedFriendRequest.sender}
-                                          isExpanded={receivedFriendRequest.sender.id === expandedUserId}
-                                          isFriend={
-                                              friends.some(friend => friend.id === receivedFriendRequest.sender.id)
-                                          }/>
-                            </button>
-                            {receivedFriendRequest.status === "pending" &&
+                            <UserCard receivedFriendRequest={receivedFriendRequest}
+                                      user={receivedFriendRequest.sender}
+                                      isExpanded={receivedFriendRequest.sender.id === expandedUserId}
+                                      isFriend={
+                                          friends.some(friend => friend.id === receivedFriendRequest.sender.id)
+                                      }
+                                      handleOnUserCardClick={onUserCardClick}/>
+                            {receivedFriendRequest.status === "PENDING" &&
                                 <>
                                     <button className="classic-button"
-                                            onClick={() => rejectFriendRequest(receivedFriendRequest.receiver.id, receivedFriendRequest.id)}>reject
+                                            onClick={() => rejectFriendRequest(receivedFriendRequest.sender.id, receivedFriendRequest.id)}>reject
                                     </button>
                                     <button className="classic-button"
-                                            onClick={() => acceptFriendRequest(receivedFriendRequest.receiver.id, receivedFriendRequest.id)}>accept
+                                            onClick={() => acceptFriendRequest(receivedFriendRequest.sender.id, receivedFriendRequest.id)}>accept
                                     </button>
                                 </>
                             }
-                            {receivedFriendRequest.status === "accepted" &&
+                            {receivedFriendRequest.status === "ACCEPTED" &&
                                 <p>Accepted</p>
                             }
-                            {receivedFriendRequest.status === "rejected" &&
+                            {receivedFriendRequest.status === "REJECTED" &&
                                 <p>Rejected</p>
                             }
                         </li>
@@ -89,39 +88,32 @@ export default function FriendRequests({
                 </ul>
             </>
             }
-            {sentFriendRequests && sentFriendRequests.length > 0 && <>
-                <h3>Sent Friend Requests</h3>
-                <ul className="friends-requests-list">
-                    {sentFriendRequests.map(sentFriendRequest => (
-                        <li key={sentFriendRequest.id} className="friend-request">
-                            <button onClick={() => onUserCardClick(sentFriendRequest.sender.id)}>
+            {sentFriendRequests && sentFriendRequests.length > 0 &&
+                <>
+                    <h3>Sent Friend Requests</h3>
+                    <ul className="friends-requests-list">
+                        {sentFriendRequests.map(sentFriendRequest => (
+                            <li key={sentFriendRequest.id} className="friend-request">
                                 <UserCard sentFriendRequest={sentFriendRequest}
                                           user={sentFriendRequest.receiver}
-                                          isExpanded={sentFriendRequest.sender.id === expandedUserId}
+                                          isExpanded={sentFriendRequest.receiver.id === expandedUserId}
                                           isFriend={
                                               friends.some(friend => friend.id === sentFriendRequest.receiver.id)
-                                          }/>
-                            </button>
-                            {sentFriendRequest.status === "pending" &&
-                                <>
-                                    <button className="classic-button"
-                                            onClick={() => acceptFriendRequest(sentFriendRequest.receiver.id, sentFriendRequest.id)}>accept
-                                    </button>
-                                    <button className="classic-button"
-                                            onClick={() => rejectFriendRequest(sentFriendRequest.receiver.id, sentFriendRequest.id)}>reject
-                                    </button>
-                                </>
-                            }
-                            {sentFriendRequest.status === "accepted" &&
-                                <p>Accepted</p>
-                            }
-                            {sentFriendRequest.status === "rejected" &&
-                                <p>Rejected</p>
-                            }
-                        </li>
-                    ))}
-                </ul>
-            </>
+                                          }
+                                          handleOnUserCardClick={onUserCardClick}/>
+                                {sentFriendRequest.status === "PENDING" &&
+                                    <p>Pending</p>
+                                }
+                                {sentFriendRequest.status === "ACCEPTED" &&
+                                    <p>Accepted</p>
+                                }
+                                {sentFriendRequest.status === "REJECTED" &&
+                                    <p>Rejected</p>
+                                }
+                            </li>
+                        ))}
+                    </ul>
+                </>
             }
         </div>
     )

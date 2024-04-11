@@ -73,15 +73,24 @@ export default function Network() {
         }
     }
 
-    function sendFriendRequest(sender: User) {
-        axios.post(`/api/users/${currentUserId}/friendRequests`, sender)
+    function sendFriendRequest(receiver: User) {
+
+        const existingPendingRequest = sentFriendRequests.find(request =>
+            request.receiver.id === receiver.id &&
+            request.sender.id === currentUserId &&
+            request.status === "PENDING");
+        if (existingPendingRequest) {
+            Logger.log("Friend request already exists and is pending: ", existingPendingRequest);
+            return;
+        }
+        axios.post(`/api/users/${currentUserId}/friendRequests`, receiver)
             .then(response => {
                 Logger.log("Friend request sent: ", response.data);
+                setSentFriendRequests([...sentFriendRequests, response.data]);
             })
             .catch(error => {
                 Logger.error("Error sending friend request: ", error);
             })
-
     }
 
     function removeFriend(friendId: string) {
@@ -123,15 +132,12 @@ export default function Network() {
                     :
                     friends.map(friend => (
                         <li key={friend.id}>
-                            <button onClick={() => onUserCardClick(friend.id)}>
-                                <UserCard user={friend}
-                                          isExpanded={friend.id === expandedUserId}
-                                          handleRemoveFriend={removeFriend}
-                                          isFriend={
-                                              friends.some(friend => friend.id === currentUserId)
-                                          }
-                                />
-                            </button>
+                            <UserCard user={friend}
+                                      isExpanded={friend.id === expandedUserId}
+                                      handleRemoveFriend={removeFriend}
+                                      isFriend={true}
+                                      handleOnUserCardClick={onUserCardClick}
+                            />
                         </li>
                     ))}
             </ul>
@@ -141,7 +147,6 @@ export default function Network() {
                           friends={friends}
                           sendFriendRequest={sendFriendRequest}
                           removeFriend={removeFriend}/>
-
         </div>
     )
 }

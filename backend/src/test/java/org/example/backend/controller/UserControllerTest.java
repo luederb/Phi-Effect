@@ -122,14 +122,6 @@ class UserControllerTest {
 
     @WithMockUser
     @Test
-    void testGetPendingFriendRequests() throws Exception {
-        mockMvc.perform(get("/api/users/1/pendingFriendRequests")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
-    }
-
-    @WithMockUser
-    @Test
     void testGetFriends() throws Exception {
         mockMvc.perform(get("/api/users/1/friends")
                         .contentType(MediaType.APPLICATION_JSON))

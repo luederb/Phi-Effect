@@ -1,4 +1,3 @@
-import "./StandardUserInformation.css";
 import {User} from "../../../../Types/User.ts";
 
 type StandardUserInformationProps = {

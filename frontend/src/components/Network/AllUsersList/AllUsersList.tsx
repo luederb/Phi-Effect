@@ -25,15 +25,15 @@ export default function AllUsersList({users, currentUserId, friends, sendFriendR
             {users.map((user) => (
                 user.id !== currentUserId &&
                 <li key={user.id}>
-                    <button className="user-card-content" onClick={() => onUserCardClick(user.id)}>
+                    <div className="user-card-content" >
                         <UserCard user={user}
+                                    handleOnUserCardClick={onUserCardClick}
                                   isExpanded={user.id === expandedUserId}
                                   handleSendFriendRequest={sendFriendRequest}
                                   handleRemoveFriend={removeFriend}
-                                  isFriend={
-                                      friends.some(friend => friend.id === user.id)
-                                  }/>
-                    </button>
+                                  isFriend={!!friends.find(friend => friend.id === user.id)}
+                                  />
+                    </div>
                 </li>
             ))}
         </ul>
