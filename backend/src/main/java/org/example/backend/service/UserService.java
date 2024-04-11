@@ -85,7 +85,7 @@ public class UserService {
         if (!friendRequest.getStatus().equals(Status.PENDING)) {
             throw new IllegalStateException("Cannot reject a non-pending friend request");
         }
-        friendRequest.setStatus(Status.PENDING);
+        friendRequest.setStatus(Status.REJECTED);
         friendRequestRepository.save(friendRequest);
         return user;
     }

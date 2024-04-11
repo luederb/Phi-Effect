@@ -5,8 +5,8 @@ import axios from "axios";
 import {Logger} from "../../Logger/Logger.tsx";
 import UserCard from "./UserCard/UserCard.tsx";
 import FriendRequests from "./FriendRequests/FriendRequests.tsx";
-import {FriendRequest} from "../../Types/FriendRequest.ts";
 import AllUsersList from "./AllUsersList/AllUsersList.tsx";
+import {FriendRequest} from "../../Types/FriendRequest.ts";
 
 export default function Network() {
     const currentUserId = localStorage.getItem("currentUserId");
@@ -15,9 +15,7 @@ export default function Network() {
     const [currentUser, setCurrentUser] = useState<User>({} as User);
     const [expandedUserId, setExpandedUserId] = useState<string | null>(null);
     const [friends, setFriends] = useState<User[]>([]);
-    const [receivedFriendRequests, setReceivedFriendRequests] = useState<FriendRequest[]>([]);
     const [sentFriendRequests, setSentFriendRequests] = useState<FriendRequest[]>([]);
-
 
     function fetchAllUsers() {
         axios.get("/api/users")
@@ -43,28 +41,6 @@ export default function Network() {
             })
     }
 
-    function fetchSentFriendRequestsForCurrentUser() {
-        axios.get(`/api/users/${currentUserId}/sentFriendRequestsForCurrentUser`)
-            .then(response => {
-                Logger.log("Sent Friend requests: ", response.data)
-                setSentFriendRequests([...sentFriendRequests, ...response.data]);
-            })
-            .catch(error => {
-                Logger.error("Error fetching friend requests: ", error);
-            })
-    }
-
-    function fetchReceivedFriendRequestsForCurrentUser() {
-        axios.get(`/api/users/${currentUserId}/receivedFriendRequestsForCurrentUser`)
-            .then(response => {
-                Logger.log("Received Friend requests: ", response.data)
-                setReceivedFriendRequests([...receivedFriendRequests, ...response.data]);
-            })
-            .catch(error => {
-                Logger.error("Error fetching friend requests: ", error);
-            })
-    }
-
     function onUserCardClick(id: string) {
         if (expandedUserId === id) {
             setExpandedUserId(null);
@@ -74,7 +50,6 @@ export default function Network() {
     }
 
     function sendFriendRequest(receiver: User) {
-
         const existingPendingRequest = sentFriendRequests.find(request =>
             request.receiver.id === receiver.id &&
             request.sender.id === currentUserId &&
@@ -102,14 +77,11 @@ export default function Network() {
             .catch(error => {
                 Logger.error("Error removing friend: ", error);
             })
-
     }
 
     useEffect(() => {
         fetchAllUsers();
         fetchFriends();
-        fetchSentFriendRequestsForCurrentUser();
-        fetchReceivedFriendRequestsForCurrentUser();
         // eslint-disable-next-line
     }, []);
 
@@ -117,14 +89,9 @@ export default function Network() {
         <div className="network-container">
             <h2>Network</h2>
             <p>connect to fellow film makers</p>
-            <FriendRequests
-                sentFriendRequests={sentFriendRequests}
-                receivedFriendRequests={receivedFriendRequests}
-                handleSetReceivedFriendRequests={setReceivedFriendRequests}
-                handleSetSentFriendRequests={setSentFriendRequests}
-                friends={friends}
-            />
-
+            <FriendRequests friends={friends} sentFriendRequests={sentFriendRequests}
+                            handleSetSendFriendRequests={setSentFriendRequests}
+                            handleSendFriendRequest={sendFriendRequest}/>
             <h3>List of all Friends:</h3>
             <ul className="user-list">
                 {friends.length === 0 ?
@@ -145,8 +112,8 @@ export default function Network() {
             <AllUsersList users={users}
                           currentUserId={currentUserId}
                           friends={friends}
-                          sendFriendRequest={sendFriendRequest}
-                          removeFriend={removeFriend}/>
+                          removeFriend={removeFriend}
+                          handleSendFriendRequest={sendFriendRequest}/>
         </div>
     )
 }

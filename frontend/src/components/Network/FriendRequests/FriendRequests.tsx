@@ -3,38 +3,55 @@ import axios from "axios";
 import {Logger} from "../../../Logger/Logger.tsx";
 import {FriendRequest} from "../../../Types/FriendRequest.ts";
 import UserCard from "../UserCard/UserCard.tsx";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {User} from "../../../Types/User.ts";
 
 type FriendRequestsProps = {
-    receivedFriendRequests: FriendRequest[];
-    handleSetReceivedFriendRequests: (value: FriendRequest[]) => void;
-    sentFriendRequests: FriendRequest[];
-    handleSetSentFriendRequests: (value: FriendRequest[]) => void;
     friends: User[];
+    sentFriendRequests: FriendRequest[];
+    handleSetSendFriendRequests: (friendRequests: FriendRequest[]) => void;
+    handleSendFriendRequest: (user: User) => void;
 }
 export default function FriendRequests({
-                                           receivedFriendRequests,
-                                           handleSetReceivedFriendRequests,
+                                           friends,
                                            sentFriendRequests,
-                                           handleSetSentFriendRequests,
-                                           friends
+                                           handleSetSendFriendRequests,
+                                           handleSendFriendRequest
                                        }: Readonly<FriendRequestsProps>) {
-    const [expandedUserId, setExpandedUserId] = useState<string | null>(null);
+    const currentUserId = localStorage.getItem("currentUserId");
 
-    function onUserCardClick(id: string) {
-        if (expandedUserId === id) {
-            setExpandedUserId(null);
-        } else {
-            setExpandedUserId(id);
-        }
+    const [expandedUserId, setExpandedUserId] = useState<string | null>(null);
+    const [receivedFriendRequests, setReceivedFriendRequests] = useState<FriendRequest[]>([]);
+
+    function fetchSentFriendRequestsForCurrentUser() {
+        axios.get(`/api/users/${currentUserId}/sentFriendRequestsForCurrentUser`)
+            .then(response => {
+                Logger.log("Sent Friend requests: ", response.data)
+                if (typeof handleSetSendFriendRequests === "function") {
+                    handleSetSendFriendRequests(sentFriendRequests ? [...sentFriendRequests, ...response.data] : [...response.data]);
+                }
+            })
+            .catch(error => {
+                Logger.error("Error fetching friend requests: ", error);
+            })
+    }
+
+    function fetchReceivedFriendRequestsForCurrentUser() {
+        axios.get(`/api/users/${currentUserId}/receivedFriendRequestsForCurrentUser`)
+            .then(response => {
+                Logger.log("Received Friend requests: ", response.data)
+                setReceivedFriendRequests([...receivedFriendRequests, ...response.data]);
+            })
+            .catch(error => {
+                Logger.error("Error fetching friend requests: ", error);
+            })
     }
 
     function acceptFriendRequest(friendId: string, friendRequestId: string) {
         axios.put(`/api/users/${friendId}/friendRequests/${friendRequestId}/accept`)
             .then(response => {
                 Logger.log("Friend request accepted: ", response.data)
-                handleSetReceivedFriendRequests(receivedFriendRequests.find(request => request.id === friendRequestId) && response.data)
+                setReceivedFriendRequests(receivedFriendRequests.find(request => request.id === friendRequestId) && response.data)
             })
             .catch(error => {
                 Logger.error("Error accepting friend request: ", error)
@@ -45,14 +62,27 @@ export default function FriendRequests({
         axios.put(`/api/users/${friendId}/friendRequests/${friendRequestId}/reject`)
             .then(response => {
                 Logger.log("Friend request rejected: ", response.data)
-                handleSetSentFriendRequests(receivedFriendRequests.find(request => request.id === friendRequestId) && response.data)
+                handleSetSendFriendRequests(sentFriendRequests.filter(request => request.id !== friendRequestId))
+                setReceivedFriendRequests(receivedFriendRequests.find(request => request.id === friendRequestId) && response.data)
             })
             .catch(error => {
                 Logger.error("Error rejecting friend request: ", error)
             })
     }
 
+    function onUserCardClick(id: string) {
+        if (expandedUserId === id) {
+            setExpandedUserId(null);
+        } else {
+            setExpandedUserId(id);
+        }
+    }
 
+    useEffect(() => {
+        fetchSentFriendRequestsForCurrentUser();
+        fetchReceivedFriendRequestsForCurrentUser();
+        // eslint-disable-next-line
+    }, [])
     return (
         <div className="friend-request-list">
             {receivedFriendRequests && receivedFriendRequests.length > 0 && <>
@@ -64,25 +94,12 @@ export default function FriendRequests({
                                       user={receivedFriendRequest.sender}
                                       isExpanded={receivedFriendRequest.sender.id === expandedUserId}
                                       isFriend={
-                                          friends.some(friend => friend.id === receivedFriendRequest.sender.id)
+                                          friends ? friends.some(friend => friend.id === receivedFriendRequest.sender.id) : false
                                       }
-                                      handleOnUserCardClick={onUserCardClick}/>
-                            {receivedFriendRequest.status === "PENDING" &&
-                                <>
-                                    <button className="classic-button"
-                                            onClick={() => rejectFriendRequest(receivedFriendRequest.sender.id, receivedFriendRequest.id)}>reject
-                                    </button>
-                                    <button className="classic-button"
-                                            onClick={() => acceptFriendRequest(receivedFriendRequest.sender.id, receivedFriendRequest.id)}>accept
-                                    </button>
-                                </>
-                            }
-                            {receivedFriendRequest.status === "ACCEPTED" &&
-                                <p>Accepted</p>
-                            }
-                            {receivedFriendRequest.status === "REJECTED" &&
-                                <p>Rejected</p>
-                            }
+                                      handleOnUserCardClick={onUserCardClick}
+                                      handleAcceptFriendRequest={acceptFriendRequest}
+                                      handleRejectFriendRequest={rejectFriendRequest}
+                                      handleSendFriendRequest={handleSendFriendRequest}/>
                         </li>
                     ))}
                 </ul>
@@ -100,16 +117,10 @@ export default function FriendRequests({
                                           isFriend={
                                               friends.some(friend => friend.id === sentFriendRequest.receiver.id)
                                           }
-                                          handleOnUserCardClick={onUserCardClick}/>
-                                {sentFriendRequest.status === "PENDING" &&
-                                    <p>Pending</p>
-                                }
-                                {sentFriendRequest.status === "ACCEPTED" &&
-                                    <p>Accepted</p>
-                                }
-                                {sentFriendRequest.status === "REJECTED" &&
-                                    <p>Rejected</p>
-                                }
+                                          handleOnUserCardClick={onUserCardClick}
+                                          handleAcceptFriendRequest={acceptFriendRequest}
+                                          handleRejectFriendRequest={rejectFriendRequest}
+                                          handleSendFriendRequest={handleSendFriendRequest}/>
                             </li>
                         ))}
                     </ul>

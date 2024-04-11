@@ -1,8 +1,6 @@
 import "./UserCard.css";
 import {User} from "../../../Types/User.ts";
-import {useEffect, useRef, useState} from "react";
-import axios from "axios";
-import {Logger} from "../../../Logger/Logger.tsx";
+import {useEffect, useRef} from "react";
 import {FriendRequest} from "../../../Types/FriendRequest.ts";
 import StandardUserInformation from "./StandardUserInformation/StandardUserInformation.tsx";
 import UserCardHeader from "./UserCardHeader/UserCardHeader.tsx";
@@ -12,43 +10,38 @@ type UserCardProps = {
     receivedFriendRequest?: FriendRequest;
     sentFriendRequest?: FriendRequest;
     isExpanded: boolean;
-    handleSendFriendRequest?: (friend: User) => void;
     handleRemoveFriend?: (friendId: string) => void;
     isFriend?: boolean;
     handleOnUserCardClick: (id: string) => void;
+    handleAcceptFriendRequest?: (friendId: string, friendRequestId: string) => void;
+    handleRejectFriendRequest?: (friendId: string, friendRequestId: string) => void;
+    handleSendFriendRequest?: (user: User) => void;
 }
 export default function UserCard({
                                      user,
                                      receivedFriendRequest,
+                                     sentFriendRequest,
                                      isExpanded,
-                                     handleSendFriendRequest,
                                      handleRemoveFriend,
                                      isFriend,
-                                     handleOnUserCardClick
+                                     handleOnUserCardClick,
+                                     handleAcceptFriendRequest,
+                                     handleRejectFriendRequest,
+                                     handleSendFriendRequest,
                                  }: Readonly<UserCardProps>) {
 
-    const currentUserId = localStorage.getItem("currentUserId");
-
     const cardRef = useRef<HTMLButtonElement>(null);
-    const [sentFriendRequests, setSentFriendRequests] = useState<FriendRequest[]>([]);
 
-    function findStatusOfSentFriendRequestForUser(requests: FriendRequest[], userId: string) {
-        if (requests.find(request => request.receiver.id === userId)) {
-            const sentRequestStatusForUser = requests.find(request => request.receiver.id === userId)?.status;
-            console.log("Sent Request found: ", sentRequestStatusForUser, " for user: ", userId);
-            return sentRequestStatusForUser;
+    function findSentFriendRequestForUser(userId: string) {
+        if (sentFriendRequest?.receiver.id === userId) {
+            return sentFriendRequest;
         }
     }
 
-    function fetchSentFriendRequestsForCurrentUser() {
-        axios.get(`/api/users/${currentUserId}/sentFriendRequestsForCurrentUser`)
-            .then(response => {
-                Logger.log("Sent Friend requests: ", response.data)
-                setSentFriendRequests([...sentFriendRequests, ...response.data]);
-            })
-            .catch(error => {
-                Logger.error("Error fetching friend requests: ", error);
-            })
+    function findReceivedFriendRequestForUser(userId: string) {
+        if (receivedFriendRequest?.sender.id === userId) {
+            return receivedFriendRequest;
+        }
     }
 
     useEffect(() => {
@@ -57,14 +50,8 @@ export default function UserCard({
         }
     }, [isExpanded]);
 
-    useEffect(() => {
-        fetchSentFriendRequestsForCurrentUser();
-        // eslint-disable-next-line
-    }, []);
-
     return (
         <div className="user-card">
-
             <div className={`expandable-user-card-content ${isExpanded ? "show" : ""}`}>
                 <UserCardHeader user={user} isExpanded={isExpanded} handleOnUserCardClick={handleOnUserCardClick}/>
                 {!isFriend && (receivedFriendRequest && receivedFriendRequest.receiver.id === user.id) &&
@@ -79,34 +66,68 @@ export default function UserCard({
                             onClick={handleRemoveFriend && (() => handleRemoveFriend(user.id))}>Remove from
                         Friends</button>
                 }
-                {!isFriend && (findStatusOfSentFriendRequestForUser(sentFriendRequests, user.id) === "PENDING") &&
+                {!isFriend && (findSentFriendRequestForUser(user.id)?.status === "PENDING") &&
                     <>
                         <p>Friend Request is pending.</p>
                         <p>It was sent on {
-                            sentFriendRequests.find(request => request.receiver.id === user.id)?.timestamp
-                                ? new Date(sentFriendRequests.find(request => request.receiver.id === user.id)?.timestamp as string).toLocaleDateString()
+                            findSentFriendRequestForUser(user.id)?.timestamp
+                                ? new Date(findSentFriendRequestForUser(user.id)?.timestamp as string).toLocaleDateString()
                                 : "No timestamp available"
                         }</p>
                     </>
                 }
-                {!isFriend && (sentFriendRequests.find(request => request.receiver.id === user.id)?.status === "ACCEPTED") &&
+                {!isFriend && (findSentFriendRequestForUser(user.id)?.status === "ACCEPTED") &&
                     <p>Friend Request was accepted on {
-                        sentFriendRequests.find(request => request.receiver.id === user.id)?.timestamp
-                            ? new Date(sentFriendRequests.find(request => request.receiver.id === user.id)?.timestamp as string).toLocaleDateString()
+                        findSentFriendRequestForUser(user.id)?.timestamp
+                            ? new Date(findSentFriendRequestForUser(user.id)?.timestamp as string).toLocaleDateString()
                             : "No timestamp available"
                     }</p>
                 }
-                {!isFriend && (sentFriendRequests.find(request => request.receiver.id === user.id)?.status === "REJECTED") &&
+                {!isFriend && (findSentFriendRequestForUser(user.id)?.status === "REJECTED") &&
                     <p>Friend Request was rejected on {
-                        sentFriendRequests.find(request => request.receiver.id === user.id)?.timestamp
-                            ? new Date(sentFriendRequests.find(request => request.receiver.id === user.id)?.timestamp as string).toLocaleDateString()
+                        findSentFriendRequestForUser(user.id)?.timestamp
+                            ? new Date(findSentFriendRequestForUser(user.id)?.timestamp as string).toLocaleDateString()
                             : "No timestamp available"
                     }</p>
                 }
-                {!isFriend && !sentFriendRequests.find(request => request.receiver.id === user.id) &&
+                {!isFriend && (findReceivedFriendRequestForUser(user.id)?.status === "ACCEPTED") &&
+                    <p>Friend Request was accepted on {
+                        findReceivedFriendRequestForUser(user.id)?.timestamp
+                            ? new Date(findReceivedFriendRequestForUser(user.id)?.timestamp as string).toLocaleDateString()
+                            : "No timestamp available"
+                    }</p>
+                }
+                {!isFriend && (findReceivedFriendRequestForUser(user.id)?.status === "PENDING") &&
+                    <>
+                        <p>Friend Request is pending.</p>
+                        <p>It was sent on {
+                            findReceivedFriendRequestForUser(user.id)?.timestamp
+                                ? new Date(findReceivedFriendRequestForUser(user.id)?.timestamp as string).toLocaleDateString()
+                                : "No timestamp available"
+                        }</p>
+                    </>
+                }
+                {!isFriend && (findReceivedFriendRequestForUser(user.id)?.status === "REJECTED") &&
+                    <p>Friend Request was rejected on {
+                        findReceivedFriendRequestForUser(user.id)?.timestamp
+                            ? new Date(findReceivedFriendRequestForUser(user.id)?.timestamp as string).toLocaleDateString()
+                            : "No timestamp available"
+                    }</p>
+                }
+                {!isFriend && !findSentFriendRequestForUser(user.id) && !findReceivedFriendRequestForUser(user.id) &&
                     <button className="classic-button send-friend-request-button"
-                            onClick={() => handleSendFriendRequest && handleSendFriendRequest(user)}>
+                            onClick={() => (handleSendFriendRequest && handleSendFriendRequest(user))}>
                         Send Friend Request</button>
+                }
+                {!isFriend && findReceivedFriendRequestForUser(user.id) && (findReceivedFriendRequestForUser(user.id)?.status === "PENDING") && !findSentFriendRequestForUser(user.id) &&
+                    <>
+                        <button className="classic-button"
+                                onClick={() => (receivedFriendRequest && handleRejectFriendRequest && handleRejectFriendRequest(receivedFriendRequest.sender.id, receivedFriendRequest.id))}>reject
+                        </button>
+                        <button className="classic-button"
+                                onClick={() => (receivedFriendRequest && handleAcceptFriendRequest && handleAcceptFriendRequest(receivedFriendRequest.sender.id, receivedFriendRequest.id))}>accept
+                        </button>
+                    </>
                 }
             </div>
         </div>

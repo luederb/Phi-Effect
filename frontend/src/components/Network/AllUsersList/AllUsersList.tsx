@@ -6,11 +6,10 @@ type AllUsersListProps = {
     users: User[];
     currentUserId: string | null;
     friends: User[];
-    sendFriendRequest: (friend: User) => void;
     removeFriend: (friendId: string) => void;
-
+    handleSendFriendRequest: (user: User) => void;
 }
-export default function AllUsersList({users, currentUserId, friends, sendFriendRequest, removeFriend}: Readonly<AllUsersListProps>) {
+export default function AllUsersList({users, currentUserId, friends, removeFriend, handleSendFriendRequest}: Readonly<AllUsersListProps>) {
     const [expandedUserId, setExpandedUserId] = useState<string | null>(null);
 
     function onUserCardClick(id: string) {
@@ -20,19 +19,20 @@ export default function AllUsersList({users, currentUserId, friends, sendFriendR
             setExpandedUserId(id);
         }
     }
+
     return (
         <ul className="user-list">
             {users.map((user) => (
                 user.id !== currentUserId &&
                 <li key={user.id}>
-                    <div className="user-card-content" >
+                    <div className="user-card-content">
                         <UserCard user={user}
-                                    handleOnUserCardClick={onUserCardClick}
+                                  handleOnUserCardClick={onUserCardClick}
                                   isExpanded={user.id === expandedUserId}
-                                  handleSendFriendRequest={sendFriendRequest}
+                                    handleSendFriendRequest={handleSendFriendRequest}
                                   handleRemoveFriend={removeFriend}
                                   isFriend={!!friends.find(friend => friend.id === user.id)}
-                                  />
+                        />
                     </div>
                 </li>
             ))}
