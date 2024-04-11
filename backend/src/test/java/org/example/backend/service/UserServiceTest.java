@@ -1,21 +1,48 @@
 package org.example.backend.service;
 
+import org.example.backend.model.Friend;
+import org.example.backend.model.FriendRequest;
+import org.example.backend.model.Status;
 import org.example.backend.model.User;
+import org.example.backend.repository.FriendRequestRepository;
 import org.example.backend.repository.UserRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest
 class UserServiceTest {
+    @MockBean
+    private FriendRequestRepository friendRequestRepository;
+
+    private User user1;
+    private User user2;
+    private FriendRequest friendRequest;
+
+    @BeforeEach
+    void setUp() {
+        user1 = new User();
+        user1.setId("1");
+        user1.setName("Test User 1");
+
+        user2 = new User();
+        user2.setId("2");
+        user2.setName("Test User 2");
+
+        friendRequest = new FriendRequest();
+        friendRequest.setId("1");
+        friendRequest.setSender(user1);
+        friendRequest.setReceiver(user2);
+        friendRequest.setStatus(Status.PENDING);
+    }
+
     @MockBean
     private UserRepository userRepository;
 
@@ -136,5 +163,52 @@ class UserServiceTest {
         assertEquals("Test User 2", result.get(1).getName());
 
         verify(userRepository, times(1)).findAll();
+    }
+    @Test
+    void sendFriendRequestTest() {
+        when(userRepository.save(any(User.class))).thenReturn(user1, user2);
+        when(friendRequestRepository.save(any(FriendRequest.class))).thenReturn(friendRequest);
+
+        FriendRequest result = userService.sendFriendRequest(user1, user2);
+
+        assertEquals(user1.getId(), result.getSender().getId());
+        assertEquals(user2.getId(), result.getReceiver().getId());
+        assertEquals(friendRequest.getId(), result.getId());
+        assertEquals(Status.PENDING, result.getStatus());
+    }
+
+    @Test
+    void acceptFriendRequestTest() {
+        when(userRepository.save(any(User.class))).thenReturn(user1, user2);
+        when(friendRequestRepository.findById(anyString())).thenReturn(Optional.of(friendRequest));
+
+        User result = userService.acceptFriendRequest(user1, friendRequest.getId());
+
+        assertEquals(user1.getId(), result.getId());
+    }
+
+    @Test
+    void getPendingFriendRequestsTest() {
+        when(userRepository.save(any(User.class))).thenReturn(user1);
+        when(friendRequestRepository.findByReceiverAndStatus(any(User.class), eq(Status.PENDING))).thenReturn(Collections.singletonList(friendRequest));
+
+        List<FriendRequest> result = userService.getPendingFriendRequests(user1);
+
+        assertEquals(1, result.size());
+        assertEquals(friendRequest.getId(), result.getFirst().getId());
+    }
+
+    @Test
+    void getFriendsTest() {
+        when(userRepository.save(any(User.class))).thenReturn(user1);
+        when(userRepository.findById(anyString())).thenReturn(Optional.of(user2));
+
+        user1.setFriends(List.of(new Friend(user2.getId(), user2.getName(), user2.getFirstName(), user2.getLastName(), user2.getEmail(), user2.getPhone(), user2.getBio(), user2.getPicture(), user2.getFavoriteProjects())));
+
+        List<User> result = userService.getFriends(user1);
+
+        assertEquals(1, result.size());
+        assertEquals(user2.getId(), result.getFirst().getId());
+        assertEquals(user2.getName(), result.getFirst().getName());
     }
 }

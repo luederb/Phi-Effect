@@ -1,7 +1,11 @@
 package org.example.backend.service;
 
 import lombok.RequiredArgsConstructor;
+import org.example.backend.model.Friend;
+import org.example.backend.model.FriendRequest;
+import org.example.backend.model.Status;
 import org.example.backend.model.User;
+import org.example.backend.repository.FriendRequestRepository;
 import org.example.backend.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
@@ -12,8 +16,12 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserService {
 
+
     private final UserRepository userRepository;
 
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
+    }
     public User getUserById(String id) {
         return userRepository.findById(id).orElseThrow();
     }
@@ -44,7 +52,43 @@ public class UserService {
         return user;
     }
 
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
+    private final FriendRequestRepository friendRequestRepository;
+
+    public FriendRequest sendFriendRequest(User sender, User receiver) {
+        FriendRequest friendRequest = new FriendRequest();
+        friendRequest.setSender(sender);
+        friendRequest.setReceiver(receiver);
+        friendRequest.setStatus(Status.PENDING);
+        return friendRequestRepository.save(friendRequest);
+    }
+
+    public User acceptFriendRequest(User user, String requestId) {
+        FriendRequest friendRequest = friendRequestRepository.findById(requestId).orElseThrow();
+        if (!friendRequest.getStatus().equals(Status.PENDING)) {
+            throw new IllegalStateException("Cannot accept a non-pending friend request");
+        }
+        friendRequest.setStatus(Status.ACCEPTED);
+        friendRequestRepository.save(friendRequest); // Save the updated friendRequest
+        User sender = friendRequest.getSender();
+        User receiver = friendRequest.getReceiver();
+        Friend friendForSender = new Friend(receiver.getId(), receiver.getName(), receiver.getFirstName(), receiver.getLastName(), receiver.getEmail(), receiver.getPhone(), receiver.getBio(), receiver.getPicture(), receiver.getFavoriteProjects());
+        Friend friendForReceiver = new Friend(sender.getId(), sender.getName(), sender.getFirstName(), sender.getLastName(), sender.getEmail(), sender.getPhone(), sender.getBio(), sender.getPicture(), sender.getFavoriteProjects());
+        sender.getFriends().add(friendForSender); // Changed to receiver
+        receiver.getFriends().add(friendForReceiver); // Changed to sender
+        userRepository.save(sender);
+        userRepository.save(receiver);
+        return user.getId().equals(sender.getId()) ? sender : receiver;
+    }
+
+    public List<FriendRequest> getPendingFriendRequests(User user) {
+        return friendRequestRepository.findByReceiverAndStatus(user, Status.PENDING);
+    }
+
+    public List<User> getFriends(User user) {
+        List<User> friends = new ArrayList<>();
+        for (Friend friend : user.getFriends()) {
+            friends.add(userRepository.findById(friend.getId()).orElseThrow());
+        }
+        return friends;
     }
 }

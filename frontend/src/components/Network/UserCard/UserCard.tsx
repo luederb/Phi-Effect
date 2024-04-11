@@ -6,9 +6,17 @@ import {useEffect, useRef} from "react";
 type UserCardProps = {
     user: User;
     isExpanded: boolean;
-    onUserClick: (id: string) => void;
+    handleOnUserClick: (id: string) => void;
+    handleSendFriendRequest?: (friend: User) => void;
+    isFriend?: boolean;
 }
-export default function UserCard({user, isExpanded, onUserClick}: Readonly<UserCardProps>) {
+export default function UserCard({
+                                     user,
+                                     isExpanded,
+                                     handleOnUserClick,
+                                     handleSendFriendRequest,
+                                     isFriend
+                                 }: Readonly<UserCardProps>) {
 
 
     const cardRef = useRef<HTMLButtonElement>(null);
@@ -22,7 +30,7 @@ export default function UserCard({user, isExpanded, onUserClick}: Readonly<UserC
     return (
         <div className="user-card">
             <div className={`expandable-user-card-content ${isExpanded ? "show" : ""}`}>
-                <button className="user-card-content" onClick={() => onUserClick(user.id)}>
+                <button className="user-card-content" onClick={() => handleOnUserClick(user.id)}>
                     <div className="user-card-header">
                         {isExpanded ?
                             <Icon variant="lessArrow" size={20} backgroundColor="var(--standardFondColor)"
@@ -41,7 +49,7 @@ export default function UserCard({user, isExpanded, onUserClick}: Readonly<UserC
                     {user.phone !== 0 &&
                         <div className="user-card-line">
                             <p>Phone: </p>
-                            <p className="phone-number">{`0${user.phone?.toString().slice(0, 3)}  -  ${user.phone?.toString().slice(3, 5)} ${user.phone?.toString().slice(5, 7)} ${user.phone?.toString().slice(7,9)} ${user.phone?.toString().slice(9)}`}</p>
+                            <p className="phone-number">{`0${user.phone?.toString().slice(0, 3)}  -  ${user.phone?.toString().slice(3, 5)} ${user.phone?.toString().slice(5, 7)} ${user.phone?.toString().slice(7, 9)} ${user.phone?.toString().slice(9)}`}</p>
                         </div>}
                     {user.bio !== "" &&
                         <div className="user-card-line">
@@ -54,7 +62,11 @@ export default function UserCard({user, isExpanded, onUserClick}: Readonly<UserC
                             <p>{user.favoriteProjects}</p>
                         </div>}
                 </button>
-            <button className="classic-button send-friend-request-button">Send Friend Request</button>
+                {!isFriend &&
+                    <button className="classic-button send-friend-request-button"
+                            onClick={() => handleSendFriendRequest && handleSendFriendRequest(user)}>Send
+                        Friend Request</button>
+                }
             </div>
         </div>
     )

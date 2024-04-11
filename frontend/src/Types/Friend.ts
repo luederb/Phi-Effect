@@ -1,6 +1,4 @@
-import {Friend} from "./Friend.ts";
-
-export type User = {
+export type Friend = {
     id: string;
     name: string;
     firstName: string;
@@ -10,5 +8,4 @@ export type User = {
     bio?: string;
     picture: string;
     favoriteProjects?: string[];
-    friends?: Friend[];
 }

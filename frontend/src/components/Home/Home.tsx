@@ -5,7 +5,7 @@ import axios from "axios";
 import {useEffect, useState} from "react";
 import {User} from "../../Types/User.ts";
 import ProjectsOverviewTable from "./ProjectsOverviewTable/ProjectsOverviewTable.tsx";
-import FriendRequests from "./FriendRequests/FriendRequests.tsx";
+import FriendRequests from "../Network/FriendRequests/FriendRequests.tsx";
 import {Logger} from "../../Logger/Logger.tsx";
 
 type HomeProps = {

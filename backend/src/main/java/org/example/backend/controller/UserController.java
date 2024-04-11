@@ -1,6 +1,7 @@
 package org.example.backend.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.example.backend.model.FriendRequest;
 import org.example.backend.model.User;
 import org.example.backend.service.UserService;
 import org.springframework.http.HttpStatus;
@@ -55,4 +56,29 @@ public class UserController {
             return userService.addFavoriteProject(user, projectId);
         }
     }
+
+    @PostMapping("/{id}/friendRequests")
+    public FriendRequest sendFriendRequest(@PathVariable String id, @RequestBody User receiver) {
+        User sender = userService.getUserById(id);
+        return userService.sendFriendRequest(sender, receiver);
+    }
+
+    @PutMapping("/{friendId}/friendRequests/{requestId}/accept")
+    public User acceptFriendRequest(@PathVariable String friendId, @PathVariable String requestId) {
+        User user = userService.getUserById(friendId);
+        return userService.acceptFriendRequest(user, requestId);
+    }
+
+    @GetMapping("/{id}/pendingFriendRequests")
+    public List<FriendRequest> getPendingFriendRequests(@PathVariable String id) {
+        User user = userService.getUserById(id);
+        return userService.getPendingFriendRequests(user);
+    }
+
+    @GetMapping("/{id}/friends")
+public List<User> getFriends(@PathVariable String id) {
+        User user = userService.getUserById(id);
+        return userService.getFriends(user);
+    }
+
 }
