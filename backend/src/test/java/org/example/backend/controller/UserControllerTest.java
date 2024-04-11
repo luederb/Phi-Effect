@@ -1,5 +1,6 @@
 package org.example.backend.controller;
 
+import org.example.backend.model.Friend;
 import org.example.backend.model.FriendRequest;
 import org.example.backend.model.Status;
 import org.example.backend.repository.FriendRequestRepository;
@@ -14,7 +15,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static com.mongodb.assertions.Assertions.assertFalse;
 import static org.hamcrest.Matchers.hasSize;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -102,7 +105,6 @@ class UserControllerTest {
         receiver.setId("2");
         receiver.setName("Test User 2");
         userRepository.save(receiver);
-
         mockMvc.perform(post("/api/users/1/friendRequests")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"id\":\"2\",\"name\":\"Test User 2\"}"))
@@ -112,19 +114,87 @@ class UserControllerTest {
     }
     @WithMockUser
     @Test
+    void testGetFriends() throws Exception {
+        mockMvc.perform(get("/api/users/1/friends")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+    @WithMockUser
+    @Test
     void testAcceptFriendRequest() throws Exception {
         mockMvc.perform(put("/api/users/1/friendRequests/1/accept")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk()) // Expect a 200 OK status
                 .andExpect(jsonPath("$.id").value("1")) // Check if the returned user has the correct id
                 .andExpect(jsonPath("$.name").value("Test User")); // Check if the returned user has the correct name
-    }
 
+        // Fetch the friend request again to check its status
+        FriendRequest friendRequest = friendRequestRepository.findById("1").orElse(null);
+        assert friendRequest != null;
+        assertEquals(Status.ACCEPTED, friendRequest.getStatus());
+    }
     @WithMockUser
     @Test
-    void testGetFriends() throws Exception {
-        mockMvc.perform(get("/api/users/1/friends")
+    void testRejectFriendRequest() throws Exception {
+        mockMvc.perform(put("/api/users/1/friendRequests/1/reject")
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk()) // Expect a 200 OK status
+                .andExpect(jsonPath("$.id").value("1")) // Check if the returned user has the correct id
+                .andExpect(jsonPath("$.name").value("Test User")); // Check if the returned user has the correct name
+
+        // Fetch the friend request again to check its status
+        FriendRequest friendRequest = friendRequestRepository.findById("1").orElse(null);
+        assert friendRequest != null;
+        assertEquals(Status.REJECTED, friendRequest.getStatus());
+    }
+    @WithMockUser
+    @Test
+    void testGetSentFriendRequestsForCurrentUser() throws Exception {
+        mockMvc.perform(get("/api/users/1/sentFriendRequestsForCurrentUser")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk()) // Expect a 200 OK status
+                .andExpect(jsonPath("$", hasSize(1))) // Expect only 1 friend request
+                .andExpect(jsonPath("$[0].id").value("1")) // Check if the returned friend request has the correct id
+                .andExpect(jsonPath("$[0].sender.id").value("1")) // Check if the sender of the friend request has the correct id
+                .andExpect(jsonPath("$[0].receiver.id").value("1")); // Check if the receiver of the friend request has the correct id
+    }
+    @WithMockUser
+    @Test
+    void testGetReceivedFriendRequestsForCurrentUser() throws Exception {
+        mockMvc.perform(get("/api/users/1/receivedFriendRequestsForCurrentUser")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk()) // Expect a 200 OK status
+                .andExpect(jsonPath("$", hasSize(1))) // Expect only 1 friend request
+                .andExpect(jsonPath("$[0].id").value("1")) // Check if the returned friend request has the correct id
+                .andExpect(jsonPath("$[0].sender.id").value("1")) // Check if the sender of the friend request has the correct id
+                .andExpect(jsonPath("$[0].receiver.id").value("1")); // Check if the receiver of the friend request has the correct id
+    }
+    @WithMockUser
+    @Test
+    void testRemoveFriend() throws Exception {
+        // Create a second user to be the friend
+        User user1 = new User();
+        user1.setId("2");
+        user1.setName("Test Friend");
+        userRepository.save(user1);
+
+        // Convert the second user to be of type "Friend"
+        Friend friend = new Friend(user1.getId(), user1.getName(), user1.getFirstName(), user1.getLastName(), user1.getEmail(), user1.getPhone(), user1.getBio(), user1.getPicture(), user1.getFavoriteProjects());
+
+        // Add the friend to the user's friend list
+        User user = userRepository.findById("1").orElse(null);
+        assert user != null;
+        user.getFriends().add(friend);
+        userRepository.save(user);
+
+        // Perform the remove friend request
+        mockMvc.perform(delete("/api/users/1/friends/2")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk()); // Expect a 200 OK status
+
+        // Fetch the user again to check if the friend has been removed
+        user = userRepository.findById("1").orElse(null);
+        assert user != null;
+        assertFalse(user.getFriends().contains(friend));
     }
 }

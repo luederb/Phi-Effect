@@ -68,13 +68,13 @@ public class UserService {
             throw new IllegalStateException("Cannot accept a non-pending friend request");
         }
         friendRequest.setStatus(Status.ACCEPTED);
-        friendRequestRepository.save(friendRequest); // Save the updated friendRequest
+        friendRequestRepository.save(friendRequest);
         User sender = friendRequest.getSender();
         User receiver = friendRequest.getReceiver();
         Friend friendForSender = new Friend(receiver.getId(), receiver.getName(), receiver.getFirstName(), receiver.getLastName(), receiver.getEmail(), receiver.getPhone(), receiver.getBio(), receiver.getPicture(), receiver.getFavoriteProjects());
         Friend friendForReceiver = new Friend(sender.getId(), sender.getName(), sender.getFirstName(), sender.getLastName(), sender.getEmail(), sender.getPhone(), sender.getBio(), sender.getPicture(), sender.getFavoriteProjects());
-        sender.getFriends().add(friendForSender); // Changed to receiver
-        receiver.getFriends().add(friendForReceiver); // Changed to sender
+        sender.getFriends().add(friendForSender);
+        receiver.getFriends().add(friendForReceiver);
         userRepository.save(sender);
         userRepository.save(receiver);
         return user.getId().equals(sender.getId()) ? sender : receiver;

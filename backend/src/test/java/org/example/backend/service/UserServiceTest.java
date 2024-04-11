@@ -51,29 +51,21 @@ class UserServiceTest {
 
     @Test
     void getUserTest() {
-        User user = new User();
-        user.setId("1");
-        user.setName("Test User");
-
-        when(userRepository.save(any(User.class))).thenReturn(user);
-        when(userRepository.findById("1")).thenReturn(Optional.of(user));
+        when(userRepository.save(any(User.class))).thenReturn(user1);
+        when(userRepository.findById("1")).thenReturn(Optional.of(user1));
 
         User foundUser = userService.getUserById("1");
 
         assertEquals("1", foundUser.getId());
-        assertEquals("Test User", foundUser.getName());
+        assertEquals("Test User 1", foundUser.getName());
     }
 
     @Test
     void saveUserTest() {
-        User user = new User();
-        user.setId("1");
-        user.setName("Test User");
+        when(userRepository.save(any(User.class))).thenReturn(user1);
+        when(userRepository.findById("1")).thenReturn(Optional.of(user1));
 
-        when(userRepository.save(any(User.class))).thenReturn(user);
-        when(userRepository.findById("1")).thenReturn(Optional.of(user));
-
-        userService.saveUser(user);
+        userService.saveUser(user1);
 
         Optional<User> savedUserOptional = userRepository.findById("1");
 
@@ -82,35 +74,27 @@ class UserServiceTest {
         User savedUser = savedUserOptional.get();
 
         assertEquals("1", savedUser.getId());
-        assertEquals("Test User", savedUser.getName());
+        assertEquals("Test User 1", savedUser.getName());
     }
 
     @Test
     void deleteUserByIdTest() {
-        String userId = "1";
+        userRepository.save(user1);
 
-        User user = new User();
-        user.setId(userId);
-        user.setName("Test User");
+        userService.deleteUserById(user1.getId());
 
-        userRepository.save(user);
-
-        userService.deleteUserById(userId);
-
-        assertTrue(userRepository.findById(userId).isEmpty());
+        assertTrue(userRepository.findById(user1.getId()).isEmpty());
     }
 
     @Test
     void addFavoriteProjectTest() {
-        User user = new User();
-        user.setId("1");
-        user.setName("Test User");
-        user.setFavoriteProjects(new ArrayList<>()); // Initialize the list
 
-        when(userRepository.save(any(User.class))).thenReturn(user);
-        when(userRepository.findById("1")).thenReturn(Optional.of(user));
+        user1.setFavoriteProjects(new ArrayList<>()); // Initialize the list
 
-        userService.addFavoriteProject(user, "1");
+        when(userRepository.save(any(User.class))).thenReturn(user1);
+        when(userRepository.findById("1")).thenReturn(Optional.of(user1));
+
+        userService.addFavoriteProject(user1, "1");
 
         User updatedUser = userRepository.findById("1").orElseThrow();
 
@@ -119,16 +103,13 @@ class UserServiceTest {
 
     @Test
     void removeFavoriteProjectTest() {
-        User user = new User();
-        user.setId("1");
-        user.setName("Test User");
-        user.setFavoriteProjects(new ArrayList<>()); // Initialize the list
-        user.getFavoriteProjects().add("1");
+        user1.setFavoriteProjects(new ArrayList<>()); // Initialize the list
+        user1.getFavoriteProjects().add("1");
 
-        when(userRepository.save(any(User.class))).thenReturn(user);
-        when(userRepository.findById("1")).thenReturn(Optional.of(user));
+        when(userRepository.save(any(User.class))).thenReturn(user1);
+        when(userRepository.findById("1")).thenReturn(Optional.of(user1));
 
-        userService.removeFavoriteProject(user, "1");
+        userService.removeFavoriteProject(user1, "1");
 
         User updatedUser = userRepository.findById("1").orElseThrow();
 
@@ -138,15 +119,7 @@ class UserServiceTest {
     @Test
     void getAllUsersTest() {
         List<User> users = new ArrayList<>();
-
-        User user1 = new User();
-        user1.setId("1");
-        user1.setName("Test User 1");
         users.add(user1);
-
-        User user2 = new User();
-        user2.setId("2");
-        user2.setName("Test User 2");
         users.add(user2);
 
         when(userRepository.findAll()).thenReturn(users);
@@ -178,15 +151,56 @@ class UserServiceTest {
     }
 
     @Test
-    void acceptFriendRequestTest() {
-        when(userRepository.save(any(User.class))).thenReturn(user1, user2);
-        when(friendRequestRepository.findById(anyString())).thenReturn(Optional.of(friendRequest));
+    void testAcceptFriendRequest() {
+        when(friendRequestRepository.findById("1")).thenReturn(Optional.of(friendRequest));
+        when(userRepository.save(any(User.class))).thenAnswer(i -> i.getArguments()[0]);
 
-        User result = userService.acceptFriendRequest(user1, friendRequest.getId());
+        userService.acceptFriendRequest(user1, "1");
 
-        assertEquals(user1.getId(), result.getId());
+        assertEquals(Status.ACCEPTED, friendRequest.getStatus());
+        assertTrue(user1.getFriends().stream().anyMatch(f -> f.getId().equals(user2.getId())));
     }
 
+    @Test
+    void testRejectFriendRequest() {
+        when(friendRequestRepository.findById("1")).thenReturn(Optional.of(friendRequest));
+        when(userRepository.save(any(User.class))).thenAnswer(i -> i.getArguments()[0]);
+
+        userService.rejectFriendRequest(user1, "1");
+
+        assertEquals(Status.REJECTED, friendRequest.getStatus());
+    }
+
+    @Test
+    void testGetSentFriendRequestsForCurrentUser() {
+        when(friendRequestRepository.findBySenderId("1")).thenReturn(Collections.singletonList(friendRequest));
+
+        List<FriendRequest> friendRequests = userService.getSentFriendRequestsForCurrentUser("1");
+
+        assertEquals(1, friendRequests.size());
+        assertEquals("1", friendRequests.getFirst().getId());
+    }
+
+    @Test
+    void testGetReceivedFriendRequestsForCurrentUser() {
+        when(friendRequestRepository.findByReceiverId("1")).thenReturn(Collections.singletonList(friendRequest));
+
+        List<FriendRequest> friendRequests = userService.getReceivedFriendRequestsForCurrentUser("1");
+
+        assertEquals(1, friendRequests.size());
+        assertEquals("1", friendRequests.getFirst().getId());
+    }
+
+    @Test
+    void testRemoveFriend() {
+        user1.getFriends().add(new Friend(user2.getId(), user2.getName(), user2.getFirstName(), user2.getLastName(), user2.getEmail(), user2.getPhone(), user2.getBio(), user2.getPicture(), user2.getFavoriteProjects()));
+        when(userRepository.findById("1")).thenReturn(Optional.of(user1));
+        when(userRepository.save(any(User.class))).thenAnswer(i -> i.getArguments()[0]);
+
+        userService.removeFriend(user1, user2);
+
+        assertFalse(user1.getFriends().stream().anyMatch(f -> f.getId().equals(user2.getId())));
+    }
 
     @Test
     void getFriendsTest() {
