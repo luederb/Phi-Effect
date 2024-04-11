@@ -4,9 +4,9 @@ import lombok.Getter;
 
 @Getter
 public enum Status {
-    PENDING("pending"),
-    ACCEPTED("accepted"),
-    REJECTED("rejected");
+    PENDING("PENDING"),
+    ACCEPTED("ACCEPTED"),
+    REJECTED("REJECTED");
 
     private final String statusValue;
 

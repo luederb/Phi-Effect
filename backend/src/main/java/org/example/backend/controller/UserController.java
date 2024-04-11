@@ -23,6 +23,7 @@ public class UserController {
     public List<User> getAllUsers() {
         return userService.getAllUsers();
     }
+
     @GetMapping("/me")
     public User getMe(@AuthenticationPrincipal OAuth2User user) {
         return new User(user.getAttributes());
@@ -40,17 +41,19 @@ public class UserController {
         }
         return userService.saveUser(user);
     }
+
     @DeleteMapping("/{id}")
-    public void deleteUserById(@PathVariable String id){
+    public void deleteUserById(@PathVariable String id) {
         userService.deleteUserById(id);
     }
+
     @PutMapping("/{userId}/updateFavoriteProjectsOfUser/{projectId}")
     public User updateUserById(@PathVariable String userId, @PathVariable String projectId) {
         User user = userService.getUserById(userId);
         if (user == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
         }
-        if(user.getFavoriteProjects().contains(projectId)) {
+        if (user.getFavoriteProjects().contains(projectId)) {
             return userService.removeFavoriteProject(user, projectId);
         } else {
             return userService.addFavoriteProject(user, projectId);
@@ -63,20 +66,37 @@ public class UserController {
         return userService.sendFriendRequest(sender, receiver);
     }
 
+    @DeleteMapping("/{userId}/friends/{friendId}")
+    public User removeFriend(@PathVariable String userId, @PathVariable String friendId) {
+        User user = userService.getUserById(userId);
+        User friend = userService.getUserById(friendId);
+        return userService.removeFriend(user, friend);
+    }
+
     @PutMapping("/{friendId}/friendRequests/{requestId}/accept")
     public User acceptFriendRequest(@PathVariable String friendId, @PathVariable String requestId) {
         User user = userService.getUserById(friendId);
         return userService.acceptFriendRequest(user, requestId);
     }
 
-    @GetMapping("/{id}/pendingFriendRequests")
-    public List<FriendRequest> getPendingFriendRequests(@PathVariable String id) {
-        User user = userService.getUserById(id);
-        return userService.getPendingFriendRequests(user);
+    @PutMapping("/{friendId}/friendRequests/{requestId}/reject")
+    public User rejectFriendRequest(@PathVariable String friendId, @PathVariable String requestId) {
+        User user = userService.getUserById(friendId);
+        return userService.rejectFriendRequest(user, requestId);
+    }
+
+    @GetMapping("/{id}/sentFriendRequestsForCurrentUser")
+    public List<FriendRequest> getFriendRequestsForCurrentUser(@PathVariable String id) {
+        return userService.getSentFriendRequestsForCurrentUser(id);
+    }
+
+    @GetMapping("/{id}/receivedFriendRequestsForCurrentUser")
+    public List<FriendRequest> getFriendReceivedRequestsForCurrentUser(@PathVariable String id) {
+        return userService.getReceivedFriendRequestsForCurrentUser(id);
     }
 
     @GetMapping("/{id}/friends")
-public List<User> getFriends(@PathVariable String id) {
+    public List<User> getFriends(@PathVariable String id) {
         User user = userService.getUserById(id);
         return userService.getFriends(user);
     }

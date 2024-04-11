@@ -68,20 +68,34 @@ public class UserService {
             throw new IllegalStateException("Cannot accept a non-pending friend request");
         }
         friendRequest.setStatus(Status.ACCEPTED);
-        friendRequestRepository.save(friendRequest); // Save the updated friendRequest
+        friendRequestRepository.save(friendRequest);
         User sender = friendRequest.getSender();
         User receiver = friendRequest.getReceiver();
         Friend friendForSender = new Friend(receiver.getId(), receiver.getName(), receiver.getFirstName(), receiver.getLastName(), receiver.getEmail(), receiver.getPhone(), receiver.getBio(), receiver.getPicture(), receiver.getFavoriteProjects());
         Friend friendForReceiver = new Friend(sender.getId(), sender.getName(), sender.getFirstName(), sender.getLastName(), sender.getEmail(), sender.getPhone(), sender.getBio(), sender.getPicture(), sender.getFavoriteProjects());
-        sender.getFriends().add(friendForSender); // Changed to receiver
-        receiver.getFriends().add(friendForReceiver); // Changed to sender
+        sender.getFriends().add(friendForSender);
+        receiver.getFriends().add(friendForReceiver);
         userRepository.save(sender);
         userRepository.save(receiver);
         return user.getId().equals(sender.getId()) ? sender : receiver;
     }
 
-    public List<FriendRequest> getPendingFriendRequests(User user) {
-        return friendRequestRepository.findByReceiverAndStatus(user, Status.PENDING);
+    public User rejectFriendRequest(User user, String requestId) {
+        FriendRequest friendRequest = friendRequestRepository.findById(requestId).orElseThrow();
+        if (!friendRequest.getStatus().equals(Status.PENDING)) {
+            throw new IllegalStateException("Cannot reject a non-pending friend request");
+        }
+        friendRequest.setStatus(Status.REJECTED);
+        friendRequestRepository.save(friendRequest);
+        return user;
+    }
+
+    public List<FriendRequest> getSentFriendRequestsForCurrentUser(String senderId) {
+        return friendRequestRepository.findBySenderId(senderId);
+    }
+
+    public List<FriendRequest> getReceivedFriendRequestsForCurrentUser(String receiverId) {
+        return friendRequestRepository.findByReceiverId(receiverId);
     }
 
     public List<User> getFriends(User user) {
@@ -90,5 +104,13 @@ public class UserService {
             friends.add(userRepository.findById(friend.getId()).orElseThrow());
         }
         return friends;
+    }
+
+    public User removeFriend(User user, User friend) {
+        user.getFriends().removeIf(f -> f.getId().equals(friend.getId()));
+        friend.getFriends().removeIf(f -> f.getId().equals(user.getId()));
+        userRepository.save(user);
+        userRepository.save(friend);
+        return user;
     }
 }

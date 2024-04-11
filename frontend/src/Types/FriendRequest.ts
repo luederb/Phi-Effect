@@ -4,5 +4,6 @@ export type FriendRequest = {
     id: string;
     sender: User;
     receiver: User;
-    status: "pending" | "accepted" | "rejected";
+    status: "PENDING" | "ACCEPTED" | "REJECTED";
+    timestamp: string;
 }
