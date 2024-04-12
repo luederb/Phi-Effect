@@ -8,9 +8,9 @@
 
 .projects-h2-container {
     position: absolute;
-    top: 61px;
-    width: 100%;
-    height: 70px;
+    top: calc(var(--headerHeight) - var(--headerBorderBottom));
+    width: var(--mobileWith);
+    height: var(--headerHeight);
     text-align: center;
     align-content: center;
     background-color: var(--standardBackgroundColor);
@@ -21,15 +21,15 @@
     align-self: center;
     width: 80%;
     margin: 0;
-    padding-block: 80px;
+    padding-block: calc(var(--headerHeight) + 0.5rem);
     z-index: 0;
 }
 
 .projects-link-container {
     position: absolute;
-    bottom: 48px;
-    width: 390px;
-    height: 70px;
+    bottom: calc(var(--navHeight));
+    width: var(--mobileWith);
+    height: var(--headerHeight);
     text-align: center;
     background-color: var(--standardBackgroundColor);
     z-index: 1;

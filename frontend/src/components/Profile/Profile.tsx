@@ -78,7 +78,7 @@ export default function Profile({handleLogin}: Readonly<ProfileProps>) {
         axios.get("/api/users/logout")
             .then(() => {
                 Logger.log("Logout successful");
-                localStorage.clear();
+                localStorage.removeItem('currentUserId');
                 navigate("/");
             })
             .catch((error) => {

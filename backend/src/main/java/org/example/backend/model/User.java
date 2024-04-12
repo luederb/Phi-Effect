@@ -46,5 +46,5 @@ public class User {
         this.bio = "";
         this.picture = getStringAttribute(attributes, "picture");
         this.isNewUser = true;
-    }
+    this.favoriteProjects = new ArrayList<>();}
 }
