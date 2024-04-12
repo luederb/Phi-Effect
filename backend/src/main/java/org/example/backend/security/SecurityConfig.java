@@ -1,6 +1,7 @@
 package org.example.backend.security;
 
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.example.backend.model.User;
 import org.example.backend.repository.UserRepository;
@@ -36,10 +37,17 @@ public class SecurityConfig {
                 .exceptionHandling(e -> e.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)))
                 .oauth2Login(o -> o.successHandler(customAuthenticationHandler))
                 .logout(logout -> logout.logoutUrl("/api/users/logout")
+                        .addLogoutHandler((request, response, authentication) -> {
+                            HttpSession session = request.getSession(false);
+                            if (session != null) {
+                                session.invalidate();
+                            }
+                        })
                         .logoutSuccessHandler((request, response, authentication) ->
                                 response.setStatus(HttpServletResponse.SC_OK)
                         ))
                 .authorizeHttpRequests(a -> a
+                        .requestMatchers(HttpMethod.GET, "/api/users/checkIfLoggedIn").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/users/me", "api/users/{currentUserId}").authenticated()
                         .requestMatchers(HttpMethod.PUT, "/api/users/{currentUserId}").authenticated()
                         .requestMatchers(HttpMethod.DELETE, "/api/users/{currentUserId}").authenticated()
