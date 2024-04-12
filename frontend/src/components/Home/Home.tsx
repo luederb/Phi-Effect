@@ -16,7 +16,6 @@ export default function Home({handleLogin}: Readonly<HomeProps>) {
 
     const currentUserId = localStorage.getItem("currentUserId");
 
-    const [userIsLoggedIn, setUserIsLoggedIn] = useState<boolean>(false);
     const [userData, setUserData] = useState<User>({
         id: "",
         name: "",
@@ -28,48 +27,41 @@ export default function Home({handleLogin}: Readonly<HomeProps>) {
     const [receivedFriendRequests, setReceivedFriendRequests] = useState<FriendRequest[]>([]);
 
     function checkIfUserIsLoggedIn() {
-        fetch('/api/users/user/loggedIn')
+        fetch("/api/users/checkIfLoggedIn", {
+            headers: {
+                'Authorization': `Bearer ${currentUserId}`
+            }
+        })
             .then(response => response.json())
             .then(isLoggedIn => {
                 if (isLoggedIn) {
-                    setUserIsLoggedIn(true);
+                    loadUser()
+                    fetchReceivedFriendRequestsForCurrentUser()
                     Logger.log("User is logged in.");
                 } else {
-                    setUserIsLoggedIn(false);
                     Logger.log("User is logged out.");
                 }
             })
-            .catch(error => Logger.error('Error while checking if user is logged in:', error));
+            .catch(error => Logger.error("Error while checking if user is logged in:", error));
     }
 
     function loadUser() {
         axios.get("/api/users/me", {
             headers: {
-                'Authorization': `Bearer ${currentUserId}`
+                "Authorization": `Bearer ${currentUserId}`
             }
         })
             .then(response => {
                 response.data.newUser = false;
                 setUserData(response.data)
-                setUserIsLoggedIn(true)
                 localStorage.setItem("currentUserId", response.data.id)
                 Logger.log("User data loaded:", response.data);
             })
             .catch((error) => {
-                try {
-                    if (error.response.status === 401) {
-                        Logger.log("User already logged in. Skip authentication. Load User ID from LocalStorage.");
-                        axios.get("/api/users/" + localStorage.getItem("currentUserId"))
-                            .then(response => {
-                                response.data.newUser = false;
-                                setUserData(response.data);
-                                Logger.log("User data loaded:", response.data);
-                            })
-                            .catch(error => {
-                                Logger.error("An error occurred while loading already logged in user data:", error);
-                            });
-                    }
-                } catch (error) {
+                if (error.response && error.response.status === 401) {
+                    Logger.log("Unauthorized. Clearing user ID from local storage.");
+                    localStorage.removeItem("currentUserId");
+                } else {
                     Logger.error("An error occurred while loading user data:", error);
                 }
             });
@@ -90,14 +82,6 @@ export default function Home({handleLogin}: Readonly<HomeProps>) {
         checkIfUserIsLoggedIn();
         // eslint-disable-next-line
     }, []);
-
-    useEffect(() => {
-        if(userIsLoggedIn) {
-            loadUser();
-            fetchReceivedFriendRequestsForCurrentUser()
-        }
-        // eslint-disable-next-line
-    }, [userIsLoggedIn]);
 
     return (
         <div className="home-container">

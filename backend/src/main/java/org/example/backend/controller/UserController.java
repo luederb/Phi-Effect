@@ -22,10 +22,11 @@ public class UserController {
 
     private final UserService userService;
 
-    @GetMapping("/user/loggedIn")
+    @GetMapping("/checkIfLoggedIn")
     public ResponseEntity<Boolean> checkIfUserIsLoggedIn(HttpServletRequest request) {
         HttpSession session = request.getSession(false);
-        return new ResponseEntity<>(session != null, HttpStatus.OK);
+        String userId = session != null ? (String) session.getAttribute("userId") : null;
+        return new ResponseEntity<>(userId != null, HttpStatus.OK);
     }
     @GetMapping
     public List<User> getAllUsers() {

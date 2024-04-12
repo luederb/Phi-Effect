@@ -2,6 +2,7 @@ package org.example.backend.service;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.example.backend.model.User;
 import org.example.backend.repository.UserRepository;
@@ -27,6 +28,10 @@ public class CustomAuthenticationHandler implements AuthenticationSuccessHandler
         var principle = (OAuth2User) authentication.getPrincipal();
         String id = principle.getAttributes().get("sub").toString();
         User user = userRepository.findById(id).orElseThrow(() -> new NoSuchElementException("no User found"));
+
+        HttpSession session = request.getSession();
+        session.setAttribute("userId", user.getId());
+
         if (!user.isNewUser()) {
             response.sendRedirect( appUrl);
         } else {
