@@ -17,7 +17,7 @@ import java.util.NoSuchElementException;
 @RequiredArgsConstructor
 public class CustomAuthenticationHandler implements AuthenticationSuccessHandler {
 
-    @Value("${app.url}")
+    @Value("${APP_URL}")
     private String appUrl;
 
     private final UserRepository userRepository;

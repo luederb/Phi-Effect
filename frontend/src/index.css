@@ -115,6 +115,7 @@ ul {
 
 li {
     list-style: none;
+    width: 100%;
 }
 
 a {
@@ -139,10 +140,12 @@ button {
     border-radius: 0;
     background-color: var(--highlightColor);
     color: var(--standardFondColor);
+
     &:hover {
         cursor: pointer;
         background-color: var(--highlightColor);
     }
+
     &:active {
         background-color: var(--highlightColor);
     }

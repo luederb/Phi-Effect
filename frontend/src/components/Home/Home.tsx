@@ -5,14 +5,18 @@ import axios from "axios";
 import {useEffect, useState} from "react";
 import {User} from "../../Types/User.ts";
 import ProjectsOverviewTable from "./ProjectsOverviewTable/ProjectsOverviewTable.tsx";
-import FriendRequests from "../Network/FriendRequests/FriendRequests.tsx";
 import {Logger} from "../../Logger/Logger.tsx";
+import {FriendRequest} from "../../Types/FriendRequest.ts";
 
 type HomeProps = {
-    handleLogin: () => void;
+    handleLogin: () => void
+
 }
 export default function Home({handleLogin}: Readonly<HomeProps>) {
 
+    const currentUserId = localStorage.getItem("currentUserId");
+
+    const [userIsLoggedIn, setUserIsLoggedIn] = useState<boolean>(false);
     const [userData, setUserData] = useState<User>({
         id: "",
         name: "",
@@ -21,12 +25,33 @@ export default function Home({handleLogin}: Readonly<HomeProps>) {
         email: "",
         picture: ""
     });
+    const [receivedFriendRequests, setReceivedFriendRequests] = useState<FriendRequest[]>([]);
+
+    function checkIfUserIsLoggedIn() {
+        fetch('/api/users/user/loggedIn')
+            .then(response => response.json())
+            .then(isLoggedIn => {
+                if (isLoggedIn) {
+                    setUserIsLoggedIn(true);
+                    Logger.log("User is logged in.");
+                } else {
+                    setUserIsLoggedIn(false);
+                    Logger.log("User is logged out.");
+                }
+            })
+            .catch(error => Logger.error('Error while checking if user is logged in:', error));
+    }
 
     function loadUser() {
-        axios.get("/api/users/me")
+        axios.get("/api/users/me", {
+            headers: {
+                'Authorization': `Bearer ${currentUserId}`
+            }
+        })
             .then(response => {
                 response.data.newUser = false;
                 setUserData(response.data)
+                setUserIsLoggedIn(true)
                 localStorage.setItem("currentUserId", response.data.id)
                 Logger.log("User data loaded:", response.data);
             })
@@ -50,10 +75,29 @@ export default function Home({handleLogin}: Readonly<HomeProps>) {
             });
     }
 
+    function fetchReceivedFriendRequestsForCurrentUser() {
+        axios.get(`/api/users/${currentUserId}/receivedFriendRequestsForCurrentUser`)
+            .then(response => {
+                Logger.log("Received Friend requests: ", response.data)
+                setReceivedFriendRequests([...receivedFriendRequests, ...response.data]);
+            })
+            .catch(error => {
+                Logger.error("Error fetching friend requests: ", error);
+            })
+    }
+
     useEffect(() => {
-        loadUser();
+        checkIfUserIsLoggedIn();
         // eslint-disable-next-line
     }, []);
+
+    useEffect(() => {
+        if(userIsLoggedIn) {
+            loadUser();
+            fetchReceivedFriendRequestsForCurrentUser()
+        }
+        // eslint-disable-next-line
+    }, [userIsLoggedIn]);
 
     return (
         <div className="home-container">
@@ -61,7 +105,7 @@ export default function Home({handleLogin}: Readonly<HomeProps>) {
                 <>
                     <h2>Welcome, {userData.firstName}</h2>
                     <ProjectsOverviewTable/>
-                    <FriendRequests/>
+
                 </>
                 :
                 <HomeWithoutLogin handleLogin={handleLogin}/>}
