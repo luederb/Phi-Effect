@@ -84,29 +84,26 @@ export default function FriendRequests({
         // eslint-disable-next-line
     }, [])
     return (
-        <div className="friend-request-list-container">
-            {receivedFriendRequests && receivedFriendRequests.length > 0 &&
-                <>
-                    <h3>Received Friend Requests</h3>
-                    <ul className="user-list">
-                        {receivedFriendRequests.map(receivedFriendRequest => (
-                            <li key={receivedFriendRequest.id}>
-                                <div className="friend-request-list">
-                                    <UserCard receivedFriendRequest={receivedFriendRequest}
-                                              user={receivedFriendRequest.sender}
-                                              isExpanded={receivedFriendRequest.sender.id === expandedUserId}
-                                              isFriend={
-                                                  friends ? friends.some(friend => friend.id === receivedFriendRequest.sender.id) : false
-                                              }
-                                              handleOnUserCardClick={onUserCardClick}
-                                              handleAcceptFriendRequest={acceptFriendRequest}
-                                              handleRejectFriendRequest={rejectFriendRequest}
-                                              handleSendFriendRequest={handleSendFriendRequest}/>
-                                </div>
-                            </li>
-                        ))}
-                    </ul>
-                </>
+        <div className="friend-request-list">
+            {receivedFriendRequests && receivedFriendRequests.length > 0 && <>
+                <h3>Received Friend Requests</h3>
+                <ul className="friends-requests-list">
+                    {receivedFriendRequests.map(receivedFriendRequest => (
+                        <li key={receivedFriendRequest.id} className="friend-request">
+                            <UserCard receivedFriendRequest={receivedFriendRequest}
+                                      user={receivedFriendRequest.sender}
+                                      isExpanded={receivedFriendRequest.sender.id === expandedUserId}
+                                      isFriend={
+                                          friends ? friends.some(friend => friend.id === receivedFriendRequest.sender.id) : false
+                                      }
+                                      handleOnUserCardClick={onUserCardClick}
+                                      handleAcceptFriendRequest={acceptFriendRequest}
+                                      handleRejectFriendRequest={rejectFriendRequest}
+                                      handleSendFriendRequest={handleSendFriendRequest}/>
+                        </li>
+                    ))}
+                </ul>
+            </>
             }
             {sentFriendRequests && sentFriendRequests.length > 0 &&
                 <>

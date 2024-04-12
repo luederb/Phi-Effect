@@ -1,6 +1,6 @@
 nav a {
     width: 100%;
-    height: var(--navHeight);
+    height: 50px;
     display: flex;
     justify-content: center;
     align-items: center;

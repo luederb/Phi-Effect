@@ -8,13 +8,6 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 
-    --mobileWith: 414px;
-    --mobileHeight: 896px;
-    --headerHeight: calc(var(--mobileHeight) * 0.0719);
-    --headerBorderBottom: 3px;
-    --navHeight: calc(var(--mobileHeight) * 0.0592);
-    --mainHeight: calc(var(--mobileHeight) - (var(--headerHeight) + var(--navHeight)) + var(--headerBorderBottom));
-
     --htmlBackgroundColor: #575757;
     --standardBackgroundColor: #2E4B5A;
     --highlightColor: #671D28;
@@ -28,7 +21,6 @@
     --standardIconStrokeColor: #671D28;
     --standardIconFillHoverColor: #325062;
     --standardIconStrokeHoverColor: #634145;
-
 }
 
 html {
@@ -42,9 +34,9 @@ html {
 
 body {
     height: 100vh;
-    max-height: var(--mobileHeight);
+    max-height: 844px;
     width: 100vw;
-    max-width: var(--mobileWith);
+    max-width: 390px;
     margin: 0;
     padding: 0;
     position: relative;
@@ -63,21 +55,21 @@ body {
 
 header {
     grid-area: header;
-    max-height: var(--headerHeight);
+    max-height: 60px;
     align-items: center;
     background-color: var(--standardBackgroundColor);
     color: var(--standardFondColor);
     display: grid;
     grid-template-columns: 4fr 1fr;
     border-radius: 5px 5px 0 0;
-    border-bottom: var(--headerBorderBottom) solid var(--highlightColor);
+    border-bottom: 3px solid var(--highlightColor);
     z-index: 1;
 }
 
 main {
     grid-area: main;
-    height: var(--mainHeight);
-    max-height: var(--mobileHeight);
+    height: calc(100vh - 110px);
+    max-height: 734px;
     padding: 0;
     margin: 0;
     overflow: auto;
@@ -88,8 +80,8 @@ main {
 
 nav {
     grid-area: nav;
-    max-height: var(--navHeight);
-    min-width: var(--mobileWith);
+    max-height: 50px;
+    min-width: 390px;
     display: flex;
     justify-content: space-around;
     background-color: var(--standardBackgroundColor);
@@ -115,7 +107,6 @@ ul {
 
 li {
     list-style: none;
-    width: 100%;
 }
 
 a {
@@ -140,12 +131,10 @@ button {
     border-radius: 0;
     background-color: var(--highlightColor);
     color: var(--standardFondColor);
-
     &:hover {
         cursor: pointer;
         background-color: var(--highlightColor);
     }
-
     &:active {
         background-color: var(--highlightColor);
     }
