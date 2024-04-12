@@ -18,7 +18,7 @@ export default function HomeWithoutLogin({handleLogin}: Readonly<HomeWithoutLogi
             <p>To create your own projects and competitions or to connect to other filmmakers, please sign in with your
                 Google account:</p>
             <div>
-                <button className="classic-button" onClick={handleLogin}>Sign in</button>
+                <button className="classic-button" onClick={handleLogin}>Log in</button>
             </div>
         </div>
     )

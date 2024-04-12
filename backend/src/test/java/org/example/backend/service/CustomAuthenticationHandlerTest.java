@@ -2,24 +2,30 @@ package org.example.backend.service;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import org.example.backend.model.User;
 import org.example.backend.repository.UserRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import static com.mongodb.assertions.Assertions.assertFalse;
 import static org.mockito.Mockito.*;
-
+@SpringBootTest
 class CustomAuthenticationHandlerTest {
+
+    @Value("${APP_URL}")
+    private String appUrl;
+    @Mock
+    private UserRepository userRepository;
 
     @Mock
     private HttpServletRequest request;
@@ -31,93 +37,56 @@ class CustomAuthenticationHandlerTest {
     private Authentication authentication;
 
     @Mock
-    private OAuth2User oAuth2User;
+    private OAuth2User principal;
 
     @Mock
-    private UserRepository userRepository;
+    private HttpSession session;
+
+    private CustomAuthenticationHandler customAuthenticationHandler;
+
+    @BeforeEach
+    public void setUp() {
+        MockitoAnnotations.openMocks(this);
+        customAuthenticationHandler = new CustomAuthenticationHandler(userRepository);
+        ReflectionTestUtils.setField(customAuthenticationHandler, "appUrl", appUrl);
+    }
 
     @Test
     void testOnAuthenticationSuccessWhenUserIsNew() throws Exception {
-        try (AutoCloseable ignored = MockitoAnnotations.openMocks(this)) {
-
-        CustomAuthenticationHandler customAuthenticationHandler = new CustomAuthenticationHandler(userRepository);
-
-        Map<String, Object> attributes = new HashMap<>();
-        attributes.put("sub", "123");
-        attributes.put("name", "John Doe");
-        attributes.put("given_name", "John");
-        attributes.put("family_name", "Doe");
-        attributes.put("email", "lueder@gmail.com");
-        attributes.put("phone", 1234567890);
-        attributes.put("bio", "I am a software engineer");
-        attributes.put("picture", "https://example.com/john.jpg");
-        attributes.put("newUser", true);
-        when(authentication.getPrincipal()).thenReturn(oAuth2User);
-        when(oAuth2User.getAttributes()).thenReturn(attributes);
-
         User user = new User();
         user.setId("123");
-        user.setName("John Doe");
-        user.setFirstName("John");
-        user.setLastName("Doe");
-        user.setEmail("lueder@gmail.com");
-        user.setPhone(1234567890);
-        user.setBio("I am a software engineer");
-        user.setPicture("https://example.com/john.jpg");
         user.setNewUser(true);
 
+        when(authentication.getPrincipal()).thenReturn(principal);
+        when(principal.getAttributes()).thenReturn(Map.of("sub", "123"));
         when(userRepository.findById("123")).thenReturn(Optional.of(user));
+        when(request.getSession()).thenReturn(session);
 
         customAuthenticationHandler.onAuthenticationSuccess(request, response, authentication);
 
-        verify(response).sendRedirect(anyString());
-        ArgumentCaptor<User> userCaptor = ArgumentCaptor.forClass(User.class);
-        verify(userRepository).save(userCaptor.capture());
-        User savedUser = userCaptor.getValue();
-        assertFalse(savedUser.isNewUser());
-        }
+        verify(session).setAttribute("userId", user.getId());
+        verify(userRepository).save(user);
+        verify(response).sendRedirect(endsWith("/complete-profile"));
     }
 
     @Test
     void testOnAuthenticationSuccessWhenUserIsNotNew() throws Exception {
-        try (AutoCloseable ignored = MockitoAnnotations.openMocks(this)) {
-            CustomAuthenticationHandler customAuthenticationHandler = new CustomAuthenticationHandler(userRepository);
+        // Arrange
+        User user = new User();
+        user.setId("123");
+        user.setNewUser(false); // User is not new
 
-            ReflectionTestUtils.setField(customAuthenticationHandler, "appUrl", "http://localhost:5173");
+        when(authentication.getPrincipal()).thenReturn(principal);
+        when(principal.getAttributes()).thenReturn(Map.of("sub", "123"));
+        when(userRepository.findById("123")).thenReturn(Optional.of(user));
+        when(request.getSession()).thenReturn(session);
 
-            Map<String, Object> attributes = new HashMap<>();
-            attributes.put("sub", "123");
-            attributes.put("name", "John Doe");
-            attributes.put("given_name", "John");
-            attributes.put("family_name", "Doe");
-            attributes.put("email", "lueder@gmail.com");
-            attributes.put("phone", 1234567890);
-            attributes.put("bio", "I am a software engineer");
-            attributes.put("picture", "https://example.com/john.jpg");
-            attributes.put("newUser", false);
-            when(authentication.getPrincipal()).thenReturn(oAuth2User);
-            when(oAuth2User.getAttributes()).thenReturn(attributes);
+        // Act
+        customAuthenticationHandler.onAuthenticationSuccess(request, response, authentication);
 
-            User user = new User();
-            user.setId("123");
-            user.setName("John Doe");
-            user.setFirstName("John");
-            user.setLastName("Doe");
-            user.setEmail("lueder@gmail.com");
-            user.setPhone(1234567890);
-            user.setBio("I am a software engineer");
-            user.setPicture("https://example.com/john.jpg");
-            user.setNewUser(true);
-
-            when(userRepository.findById("123")).thenReturn(Optional.of(user));
-
-            customAuthenticationHandler.onAuthenticationSuccess(request, response, authentication);
-
-            verify(response).sendRedirect("http://localhost:5173/complete-profile");
-            ArgumentCaptor<User> userCaptor = ArgumentCaptor.forClass(User.class);
-            verify(userRepository).save(userCaptor.capture());
-            User savedUser = userCaptor.getValue();
-            assertFalse(savedUser.isNewUser());
-        }
+        // Assert
+        verify(session).setAttribute("userId", user.getId());
+        verify(userRepository, never()).save(any(User.class)); // User is not saved
+        verify(response).sendRedirect(appUrl); // Redirect to exact URL
     }
 }

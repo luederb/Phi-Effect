@@ -146,7 +146,7 @@ export default function CreateNewProject() {
                            onChange={handleInputChange}/>
                 </div>
             </form>
-                <button onClick={createProject}>Create Project</button>
+                <button className="classic-button" onClick={createProject}>Create Project</button>
         </div>
     )
 }
