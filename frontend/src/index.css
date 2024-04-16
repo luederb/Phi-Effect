@@ -8,12 +8,12 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 
-    --mobileWith: 414px;
+    --mobileWidth: 414px;
     --mobileHeight: 896px;
-    --headerHeight: calc(var(--mobileHeight) * 0.0719);
     --headerBorderBottom: 3px;
+    --headerHeight: calc(calc(var(--mobileHeight) * 0.0719) - var(--headerBorderBottom));
     --navHeight: calc(var(--mobileHeight) * 0.0592);
-    --mainHeight: calc(var(--mobileHeight) - (var(--headerHeight) + var(--navHeight)) + var(--headerBorderBottom));
+    --mainHeight: calc(var(--mobileHeight) - calc((var(--headerHeight) + var(--navHeight)) + var(--headerBorderBottom)));
 
     --htmlBackgroundColor: #575757;
     --standardBackgroundColor: #2E4B5A;
@@ -28,7 +28,6 @@
     --standardIconStrokeColor: #671D28;
     --standardIconFillHoverColor: #325062;
     --standardIconStrokeHoverColor: #634145;
-
 }
 
 html {
@@ -44,7 +43,7 @@ body {
     height: 100vh;
     max-height: var(--mobileHeight);
     width: 100vw;
-    max-width: var(--mobileWith);
+    max-width: var(--mobileWidth);
     margin: 0;
     padding: 0;
     position: relative;
@@ -57,13 +56,13 @@ body {
     "main"
     "nav";
     grid-template-columns: 1fr;
-    grid-template-rows: auto auto auto;
+    grid-template-rows: calc(var(--headerHeight) + var(--headerBorderBottom)) var(--mainHeight) var(--navHeight);
 }
 
 
 header {
     grid-area: header;
-    max-height: var(--headerHeight);
+    height: var(--headerHeight);
     align-items: center;
     background-color: var(--standardBackgroundColor);
     color: var(--standardFondColor);
@@ -77,7 +76,6 @@ header {
 main {
     grid-area: main;
     height: var(--mainHeight);
-    max-height: var(--mobileHeight);
     padding: 0;
     margin: 0;
     overflow: auto;
@@ -88,8 +86,7 @@ main {
 
 nav {
     grid-area: nav;
-    max-height: var(--navHeight);
-    min-width: var(--mobileWith);
+    height: var(--navHeight);
     display: flex;
     justify-content: space-around;
     background-color: var(--standardBackgroundColor);
@@ -131,23 +128,16 @@ a:hover {
 
 button {
     font-family: 'Open Sans', sans-serif;
-    font-size: 16px;
     margin: 0;
     padding: 0;
     text-align: center;
     text-decoration: none;
     border: none;
     border-radius: 0;
-    background-color: var(--highlightColor);
+    background-color: transparent;
     color: var(--standardFondColor);
-
     &:hover {
         cursor: pointer;
-        background-color: var(--highlightColor);
-    }
-
-    &:active {
-        background-color: var(--highlightColor);
     }
 }
 

@@ -1,10 +1,30 @@
+header {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    justify-content: center;
+}
 header a {
     display: flex;
+    align-items: center;
     justify-content: center;
+}
+
+.name-and-logo {
+    display: flex;
+align-items: center;
+    height: calc(var(--headerHeight) * 0.8);
+}
+
+.logo:hover {
+    fill: var(--standardIconStrokeHoverColor);
+}
+.name-and-logo h1:hover {
+    color: var(--standardHoverFondColor);
 }
 
 header a:hover {
     background-color: var(--standardBackgroundColor);
+    cursor: pointer;
 }
 
 header a:hover .icon-svg {

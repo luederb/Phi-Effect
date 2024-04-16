@@ -79,7 +79,7 @@ export default function Profile({handleLogin}: Readonly<ProfileProps>) {
             .then(() => {
                 Logger.log("Logout successful");
                 localStorage.removeItem('currentUserId');
-                navigate("/");
+                navigate("/home");
             })
             .catch((error) => {
                 Logger.error("Logout failed:", error);

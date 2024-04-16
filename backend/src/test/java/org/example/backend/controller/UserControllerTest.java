@@ -7,8 +7,6 @@ import org.example.backend.repository.FriendRequestRepository;
 import org.example.backend.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.example.backend.model.User;
-import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.mock.web.MockHttpSession;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -199,31 +197,4 @@ class UserControllerTest {
         assert user != null;
         assertFalse(user.getFriends().contains(friend));
     }
-    @Test
-    void testCheckIfUserIsLoggedInWhenUserIsLoggedIn() throws Exception {
-        // Create a mock session and add the "userId" attribute
-        MockHttpSession session = new MockHttpSession();
-        session.setAttribute("userId", "1");
-
-        // Create a mock request and set the session
-        MockHttpServletRequest request = new MockHttpServletRequest();
-        request.setSession(session);
-
-        // Perform the request
-        mockMvc.perform(get("/api/users/checkIfLoggedIn")
-                        .session(session) // Set the mock session
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$").value(true));
-    }
-
-    @Test
-    void testCheckIfUserIsLoggedInWhenUserIsNotLoggedIn() throws Exception {
-        // Perform the request without a session
-        mockMvc.perform(get("/api/users/checkIfLoggedIn")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$").value(false));
-    }
-
 }

@@ -1,6 +1,7 @@
 package org.example.backend.model;
 
 import lombok.*;
+import lombok.Builder.Default;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,10 +26,10 @@ public class User {
     private String bio;
     private String picture;
     private boolean isNewUser;
-    private List<String> favoriteProjects;
-
-    @Builder.Default
+    @Default
     private List<Friend> friends = new ArrayList<>();
+    @Default
+    private List<String> favoriteProjects = new ArrayList<>();
 
     public User(Map<String, Object> attributes) {
         LOGGER.info("Creating User with attributes: {}", attributes);
@@ -45,6 +46,5 @@ public class User {
         this.phone = 0;
         this.bio = "";
         this.picture = getStringAttribute(attributes, "picture");
-        this.isNewUser = true;
-    this.favoriteProjects = new ArrayList<>();}
+        this.isNewUser = true;}
 }

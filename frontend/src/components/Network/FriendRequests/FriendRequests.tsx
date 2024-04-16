@@ -5,47 +5,18 @@ import {FriendRequest} from "../../../Types/FriendRequest.ts";
 import UserCard from "../UserCard/UserCard.tsx";
 import {useEffect, useState} from "react";
 import {User} from "../../../Types/User.ts";
+import {
+    fetchFriends,
+    fetchReceivedFriendRequestsForCurrentUser,
+    fetchSentFriendRequestsForCurrentUser
+} from "../../../Utils/API/ApiFunctions.ts";
 
-type FriendRequestsProps = {
-    friends: User[];
-    sentFriendRequests: FriendRequest[];
-    handleSetSendFriendRequests: (friendRequests: FriendRequest[]) => void;
-    handleSendFriendRequest: (user: User) => void;
-}
-export default function FriendRequests({
-                                           friends,
-                                           sentFriendRequests,
-                                           handleSetSendFriendRequests,
-                                           handleSendFriendRequest
-                                       }: Readonly<FriendRequestsProps>) {
+export default function FriendRequests() {
     const currentUserId = localStorage.getItem("currentUserId");
-
     const [expandedUserId, setExpandedUserId] = useState<string | null>(null);
+    const [friends, setFriends] = useState<User[]>([]);
+    const [sentFriendRequests, setSentFriendRequests] = useState<FriendRequest[]>([]);
     const [receivedFriendRequests, setReceivedFriendRequests] = useState<FriendRequest[]>([]);
-
-    function fetchSentFriendRequestsForCurrentUser() {
-        axios.get(`/api/users/${currentUserId}/sentFriendRequestsForCurrentUser`)
-            .then(response => {
-                Logger.log("Sent Friend requests: ", response.data)
-                if (typeof handleSetSendFriendRequests === "function") {
-                    handleSetSendFriendRequests(sentFriendRequests ? [...sentFriendRequests, ...response.data] : [...response.data]);
-                }
-            })
-            .catch(error => {
-                Logger.error("Error fetching friend requests: ", error);
-            })
-    }
-
-    function fetchReceivedFriendRequestsForCurrentUser() {
-        axios.get(`/api/users/${currentUserId}/receivedFriendRequestsForCurrentUser`)
-            .then(response => {
-                Logger.log("Received Friend requests: ", response.data)
-                setReceivedFriendRequests([...receivedFriendRequests, ...response.data]);
-            })
-            .catch(error => {
-                Logger.error("Error fetching friend requests: ", error);
-            })
-    }
 
     function acceptFriendRequest(friendId: string, friendRequestId: string) {
         axios.put(`/api/users/${friendId}/friendRequests/${friendRequestId}/accept`)
@@ -62,7 +33,7 @@ export default function FriendRequests({
         axios.put(`/api/users/${friendId}/friendRequests/${friendRequestId}/reject`)
             .then(response => {
                 Logger.log("Friend request rejected: ", response.data)
-                handleSetSendFriendRequests(sentFriendRequests.filter(request => request.id !== friendRequestId))
+                setSentFriendRequests(sentFriendRequests.filter(request => request.id !== friendRequestId))
                 setReceivedFriendRequests(receivedFriendRequests.find(request => request.id === friendRequestId) && response.data)
             })
             .catch(error => {
@@ -79,15 +50,19 @@ export default function FriendRequests({
     }
 
     useEffect(() => {
-        fetchSentFriendRequestsForCurrentUser();
-        fetchReceivedFriendRequestsForCurrentUser();
+        if (currentUserId) {
+            fetchFriends(currentUserId, setFriends)
+            fetchSentFriendRequestsForCurrentUser(currentUserId, setSentFriendRequests)
+            fetchReceivedFriendRequestsForCurrentUser(currentUserId, setReceivedFriendRequests)
+        }
         // eslint-disable-next-line
-    }, [])
+    }, []);
+
     return (
         <div className="friend-request-list-container">
             {receivedFriendRequests && receivedFriendRequests.length > 0 &&
                 <>
-                    <h3>Received Friend Requests</h3>
+                    <h3 className="friend-requests-headline">Received Friend Requests</h3>
                     <ul className="user-list">
                         {receivedFriendRequests.map(receivedFriendRequest => (
                             <li key={receivedFriendRequest.id}>
@@ -96,12 +71,12 @@ export default function FriendRequests({
                                               user={receivedFriendRequest.sender}
                                               isExpanded={receivedFriendRequest.sender.id === expandedUserId}
                                               isFriend={
-                                                  friends ? friends.some(friend => friend.id === receivedFriendRequest.sender.id) : false
+                                                  friends.length > 0 ? friends.some(friend => friend.id === receivedFriendRequest.sender.id) : false
                                               }
                                               handleOnUserCardClick={onUserCardClick}
                                               handleAcceptFriendRequest={acceptFriendRequest}
                                               handleRejectFriendRequest={rejectFriendRequest}
-                                              handleSendFriendRequest={handleSendFriendRequest}/>
+                                    />
                                 </div>
                             </li>
                         ))}
@@ -111,9 +86,10 @@ export default function FriendRequests({
             {sentFriendRequests && sentFriendRequests.length > 0 &&
                 <>
                     <h3>Sent Friend Requests</h3>
-                    <ul className="friends-requests-list">
+                    <ul className="user-list">
                         {sentFriendRequests.map(sentFriendRequest => (
-                            <li key={sentFriendRequest.id} className="friend-request">
+                            <li key={sentFriendRequest.id}>
+                                <div className="friend-request-list">
                                 <UserCard sentFriendRequest={sentFriendRequest}
                                           user={sentFriendRequest.receiver}
                                           isExpanded={sentFriendRequest.receiver.id === expandedUserId}
@@ -122,8 +98,8 @@ export default function FriendRequests({
                                           }
                                           handleOnUserCardClick={onUserCardClick}
                                           handleAcceptFriendRequest={acceptFriendRequest}
-                                          handleRejectFriendRequest={rejectFriendRequest}
-                                          handleSendFriendRequest={handleSendFriendRequest}/>
+                                          handleRejectFriendRequest={rejectFriendRequest}/>
+                                </div>
                             </li>
                         ))}
                     </ul>

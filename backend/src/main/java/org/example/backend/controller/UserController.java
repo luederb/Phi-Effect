@@ -1,13 +1,11 @@
 package org.example.backend.controller;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
+
 import lombok.RequiredArgsConstructor;
 import org.example.backend.model.FriendRequest;
 import org.example.backend.model.User;
 import org.example.backend.service.UserService;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
@@ -22,12 +20,6 @@ public class UserController {
 
     private final UserService userService;
 
-    @GetMapping("/checkIfLoggedIn")
-    public ResponseEntity<Boolean> checkIfUserIsLoggedIn(HttpServletRequest request) {
-        HttpSession session = request.getSession(false);
-        String userId = session != null ? (String) session.getAttribute("userId") : null;
-        return new ResponseEntity<>(userId != null, HttpStatus.OK);
-    }
     @GetMapping
     public List<User> getAllUsers() {
         return userService.getAllUsers();

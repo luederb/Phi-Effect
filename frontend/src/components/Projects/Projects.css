@@ -8,13 +8,15 @@
 
 .projects-h2-container {
     position: absolute;
-    top: calc(var(--headerHeight) - var(--headerBorderBottom));
-    width: var(--mobileWith);
+    top: calc(calc(var(--headerHeight) + var(--headerBorderBottom)));
+    width: var(--mobileWidth);
     height: var(--headerHeight);
     text-align: center;
-    align-content: center;
     background-color: var(--standardBackgroundColor);
     z-index: 1;
+}
+.projects-header {
+    margin: 4px;
 }
 
 .project-card-list {
@@ -27,9 +29,9 @@
 
 .projects-link-container {
     position: absolute;
-    bottom: calc(var(--navHeight));
-    width: var(--mobileWith);
-    height: var(--headerHeight);
+    bottom: var(--navHeight);
+    width: var(--mobileWidth);
+    height: calc(var(--navHeight) + 50px);
     text-align: center;
     background-color: var(--standardBackgroundColor);
     z-index: 1;

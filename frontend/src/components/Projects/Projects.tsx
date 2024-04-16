@@ -61,7 +61,7 @@ useEffect(() => {
 return (
     <div className="projects-container">
         <div className="projects-h2-container">
-            <h2>Projects</h2>
+            <h2 className="projects-header">Projects</h2>
         </div>
         <ul className="project-card-list">
             {projects.map((project) => (
