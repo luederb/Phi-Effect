@@ -50,7 +50,6 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/users/me", "api/users/{currentUserId}").authenticated()
                         .requestMatchers(HttpMethod.PUT, "/api/users/{currentUserId}").authenticated()
                         .requestMatchers(HttpMethod.DELETE, "/api/users/{currentUserId}").authenticated()
-                        .requestMatchers(HttpMethod.GET, "/api/users").permitAll()
                         .anyRequest().permitAll());
 
         return http.build();
