@@ -50,7 +50,7 @@ export default function CompleteProfile() {
         axios.put(`/api/users/${googleUserData.id}`, googleUserData)
             .then(response => {
                 Logger.log("Response: ", response.data);
-                navigate("/");
+                navigate("/home");
             })
             .catch(error => Logger.log("Error fetching data: ", error))
     }

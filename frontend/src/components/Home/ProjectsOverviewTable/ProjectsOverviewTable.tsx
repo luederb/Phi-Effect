@@ -34,7 +34,7 @@ export default function ProjectsOverviewTable() {
         fetchEvents();
     }, []);
     return (
-        <div>
+        <div className="projects-overview-table">
             {events.length === 0 ?
                 <p>You have no upcoming events</p>
                 :

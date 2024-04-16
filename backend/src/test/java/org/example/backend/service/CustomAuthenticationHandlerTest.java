@@ -87,6 +87,6 @@ class CustomAuthenticationHandlerTest {
         // Assert
         verify(session).setAttribute("userId", user.getId());
         verify(userRepository, never()).save(any(User.class)); // User is not saved
-        verify(response).sendRedirect(appUrl); // Redirect to exact URL
+        verify(response).sendRedirect(appUrl + "/home"); // Redirect to exact URL
     }
 }

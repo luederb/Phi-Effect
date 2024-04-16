@@ -47,7 +47,6 @@ public class SecurityConfig {
                                 response.setStatus(HttpServletResponse.SC_OK)
                         ))
                 .authorizeHttpRequests(a -> a
-                        .requestMatchers(HttpMethod.GET, "/api/users/checkIfLoggedIn").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/users/me", "api/users/{currentUserId}").authenticated()
                         .requestMatchers(HttpMethod.PUT, "/api/users/{currentUserId}").authenticated()
                         .requestMatchers(HttpMethod.DELETE, "/api/users/{currentUserId}").authenticated()

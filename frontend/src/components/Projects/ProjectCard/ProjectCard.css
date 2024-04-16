@@ -1,5 +1,5 @@
 .project-card-content {
-    max-height: 8.8rem;
+    max-height: 8.3rem;
     border-radius: 0.5rem;
     overflow: hidden;
     transition: max-height 1s ease-in-out;
@@ -76,4 +76,5 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
     justify-items: flex-start;
+    text-align: left
 }

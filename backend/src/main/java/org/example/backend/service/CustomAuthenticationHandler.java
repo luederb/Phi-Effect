@@ -33,7 +33,7 @@ public class CustomAuthenticationHandler implements AuthenticationSuccessHandler
         session.setAttribute("userId", user.getId());
 
         if (!user.isNewUser()) {
-            response.sendRedirect( appUrl);
+            response.sendRedirect( appUrl + "/home");
         } else {
             user.setNewUser(false);
             userRepository.save(user);

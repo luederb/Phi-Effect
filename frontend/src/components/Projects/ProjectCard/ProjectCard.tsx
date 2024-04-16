@@ -36,7 +36,7 @@ export default function ProjectCard({
                             onClick={() => handleUpdateFavoriteProjectsForCurrentUser(project.id)}>
                         {isFavorite ?
                             <Icons variant="favoriteFilled" backgroundColor="var(--standardFondColor)"
-                                   strokeColor="var(--standardFondColor)" strokeWidth={1} size={25}/>
+                                   strokeColor="var(--)" strokeWidth={1} size={25}/>
                             :
                             <Icons variant="favorite" backgroundColor="var(--standardFondColor)"
                                    strokeColor="var(--standardFondColor)" strokeWidth={1} size={25}/>

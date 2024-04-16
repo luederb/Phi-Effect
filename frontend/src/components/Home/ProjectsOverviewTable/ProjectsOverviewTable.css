@@ -31,3 +31,7 @@ caption {
     font-weight: bold;
     margin-bottom: 5px;
 }
+
+.projects-overview-table {
+    margin-block: 20px;
+}

@@ -114,7 +114,9 @@ export default function UserCard({
                             : "No timestamp available"
                     }</p>
                 }
-                {!isFriend && !findSentFriendRequestForUser(user.id) && !findReceivedFriendRequestForUser(user.id) &&
+                {(!isFriend &&
+                        (!findSentFriendRequestForUser(user.id) && (findSentFriendRequestForUser(user.id)?.status !== "PENDING")) &&
+                        (!findSentFriendRequestForUser(user.id) && (findReceivedFriendRequestForUser(user.id)?.status !== "PENDING"))) &&
                     <button className="classic-button send-friend-request-button"
                             onClick={() => (handleSendFriendRequest && handleSendFriendRequest(user))}>
                         Send Friend Request</button>
